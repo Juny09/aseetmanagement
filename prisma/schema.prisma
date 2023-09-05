@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Note {
+  id Int @id @default(autoincrement())
+  name String
+  idp String
+  quantity String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Asset{
+  id Int @id @default(autoincrement())
+  ename String
+  ide String
+  type String
+  subtype String
+  manufacturer String
+  modelnum String
+  serialnum String
+  datepurc String
+  install String
+  controlsys String
+  commission String
+  datasheet String
+  connection String
+  foundation String
+  mechanical String
+  electrical String
+  ratedeffiency String
+  deviceassociation String
+  generalnote String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Space{
+  id Int @id @default(autoincrement())
+  country String
+  state String
+  area String
+  building String
+  floor String
+  zone String
+  dimensions String
+  areasq String
+  occupancy String
+  spacetype String
+  purposeusage String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  title     String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  brand     Brand    @relation(fields: [brandId], references: [id])
+  brandId   Int
+
+}

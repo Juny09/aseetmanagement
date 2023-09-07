@@ -17,8 +17,8 @@ interface FormData {
 }
 
 // Array interface
-interface Notes {
-  notes: {
+interface Parts {
+  parts: {
   id:string
   name:string
   idp:string
@@ -27,10 +27,10 @@ interface Notes {
   }[]
 }
 
-// Load notes from getServerSideProps server side rendering
-const Home: NextPage<Notes> = ({ notes }) => {
+// Load Parts from getServerSideProps server side rendering
+const Home: NextPage<Parts> = ({ parts }) => {
   const { step, form, setForm, nextStep, prevStep, resetForm } = useForm();
-  const [newNote, setNewNote] = useState<Boolean>(true);
+  const [newPart, setNewPart] = useState<Boolean>(true);
   const router = useRouter();
 
   const refreshData = () => {
@@ -39,7 +39,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   async function handleSubmit(data: FormData) {
     try {
-      if (newNote) {
+      if (newPart) {
         if (data.name && data.idp) {
           // CREATE
           fetch('api/create', {
@@ -58,7 +58,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
         }
       } else {
         // UPDATE
-        fetch(`api/note/${data.id}`, {
+        fetch(`api/part/${data.id}`, {
           body: JSON.stringify(data),
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
           method: 'PUT'
         }).then(() => {
           setForm({ name: '', idp: '', quantity: '', description: '',id:''});
-          setNewNote(true);
+          setNewPart(true);
           refreshData();
           router.push('/dashboard'); // Redirect to the dashboard page
         });
@@ -77,22 +77,22 @@ const Home: NextPage<Notes> = ({ notes }) => {
   }
   
 
-  async function updateNote(
+  async function updatePart(
     name: string,
     idp: string,
     quantity: string,
     description: string,
     id: string
   ) {
-    console.log("updateNote called"); // Add this line
+    console.log("updatePart called"); // Add this line
     setForm({ name, idp, quantity, description, id });
-    setNewNote(false);
+    setNewPart(false);
   }
   
 
-  async function deleteNote(id: string) {
+  async function deletePart(id: string) {
     try {
-      fetch(`api/note/${id}`, {
+      fetch(`api/part/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -107,7 +107,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   function handleCancel() {
     setForm({name:'', idp:'', quantity:'', description:'', id:''})
-    setNewNote(true)
+    setNewPart(true)
   }
 
   return (
@@ -209,8 +209,8 @@ const Home: NextPage<Notes> = ({ notes }) => {
 export default Home
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  // READ all notes from DB
-  const notes = await prisma?.note.findMany({
+  // READ all Parts from DB
+  const parts = await prisma?.part.findMany({
     select: {
       name: true,
       idp: true,
@@ -222,7 +222,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      notes: notes || [], // Ensure that notes is initialized even if it's null
+      parts: parts || [], // Ensure that parts is initialized even if it's null
     }
   };
 };

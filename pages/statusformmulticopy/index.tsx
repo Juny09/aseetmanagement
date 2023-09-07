@@ -5,21 +5,21 @@ import { prisma } from '../../lib/prisma'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useForm } from './hook'; 
-
+import type { Part } from "@prisma/client";
 
 
 interface FormData {
-  id:string
-  mstatus: string
-  category: string
-  from: string
-  to:string
-  performby: string
-  attach: string
-  estimateddate: string
-  warrantyinfo: string
-  comment: string
-
+  id: string;
+  mstatus: string;
+  category: string;
+  from: string;
+  to: string;
+  performby: string;
+  attach: string;
+  estimateddate: string;
+  warrantyinfo: string;
+  comment: string;
+  partId: string; // Add partId property here
 }
 
 // Array interface
@@ -35,11 +35,12 @@ interface Status {
   estimateddate: string
   warrantyinfo: string
   comment: string
+  partId: string
   }[]
 }
 
 // Load mstatus from getServerSideProps server side rendering
-const Home: NextPage<Status> = ({ status }) => {
+const Home: NextPage<Status & { parts: Part[]; noParts: boolean  }> = ({ status, parts, noParts  }) => {
   const { step, form, setForm, nextStep, prevStep, resetForm } = useForm();
   const [newStatus, setNewStatus] = useState<Boolean>(true);
   const router = useRouter();
@@ -60,9 +61,20 @@ const Home: NextPage<Status> = ({ status }) => {
             },
             method: 'POST'
           }).then(() => {
-            setForm({id:'', mstatus:'', category:'', from:'', to:'', performby:'', attach:'', estimateddate:'', warrantyinfo:'', comment:''});
+            setForm({
+              id:'', 
+              mstatus:'',
+              category:'', 
+              from:'', 
+              to:'', 
+              performby:'', 
+              attach:'', 
+              estimateddate:'', 
+              warrantyinfo:'', 
+              comment:'',
+              partId:'',});
             refreshData();
-            router.push('/statusformmulti'); // Redirect to the dashboard page
+            router.push('/statusformmulticopy'); // Redirect to the dashboard page
           });
         } else {
           alert("Part status can not be blank");
@@ -76,10 +88,21 @@ const Home: NextPage<Status> = ({ status }) => {
           },
           method: 'PUT'
         }).then(() => {
-          setForm({ id:'', mstatus:'', category:'', from:'', to:'', performby:'', attach:'', estimateddate:'', warrantyinfo:'', comment:'' });
+          setForm({ 
+            id:'', 
+            mstatus:'', 
+            category:'', 
+            from:'', 
+            to:'', 
+            performby:'', 
+            attach:'', 
+            estimateddate:'', 
+            warrantyinfo:'', 
+            comment:'' ,
+            partId:'',});
           setNewStatus(true);
           refreshData();
-          router.push('/statusformmulti'); // Redirect to the dashboard page
+          router.push('/statusformmulticopy'); // Redirect to the dashboard page
         });
       }
     } catch (error) {
@@ -99,6 +122,7 @@ const Home: NextPage<Status> = ({ status }) => {
     estimateddate: string,
     warrantyinfo: string,
     comment: string,
+    partId: string,
   ) {
     console.log("updateMstatus called"); // Add this line
     setForm({ 
@@ -111,7 +135,8 @@ const Home: NextPage<Status> = ({ status }) => {
       attach, 
       estimateddate, 
       warrantyinfo, 
-      comment });
+      comment,
+      partId });
     setNewStatus(false);
   }
   
@@ -132,7 +157,18 @@ const Home: NextPage<Status> = ({ status }) => {
   }
 
   function handleCancel() {
-    setForm({id:'',mstatus:'', category:'', from:'', to:'', performby:'', attach:'', estimateddate:'', warrantyinfo:'', comment:''})
+    setForm({
+    id:'',
+    mstatus:'', 
+    category:'', 
+    from:'', 
+    to:'', 
+    performby:'', 
+    attach:'', 
+    estimateddate:'', 
+    warrantyinfo:'', 
+    comment:'', 
+    partId:'',})
     setNewStatus(true)
   }
 
@@ -287,6 +323,66 @@ const Home: NextPage<Status> = ({ status }) => {
   >
 
     <h1 className="text-center font-bold text-2xl m-4 text-white">Part</h1>
+        
+    <select
+        id="part-select"
+        value={form.partId}
+        onChange={(e) => setForm({ ...form, partId: e.target.value })}
+        required
+        className="block py-2.5 px-0 w-full text-m text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-white dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <option className="bg-gray-600" value="">
+          Choose a Part
+        </option>
+
+        {parts.map((part) => (
+          <option
+            key={part.idp}
+            value={part.idp}
+            className="bg-gray-600"
+          >
+            {part.name} ({part.idp})
+          </option>
+        ))}
+      </select>
+
+      
+      {/* <div>
+      <label className="text-white">Choose Parts:</label>
+      {noParts ? (
+        <p className="text-red-500">
+          <a href="../partform" target="_blank" rel="noopener noreferrer">
+            Please add a part, click here...
+          </a>
+        </p>
+      ) : (
+        <div>
+          {parts.map((part) => (
+            <div key={part.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id={`part-checkbox-${part.id}`}
+                checked={form.partId.includes(part.id.toString())}
+                value={form.partId}
+                onChange={(e) => setForm({ ...form, partId: e.target.value })}
+                required
+                className="text-blue-500"
+              />
+              <label htmlFor={`part-checkbox-${part.id}`} className="text-white">
+                {part.name} ({part.idp})
+              </label>
+            </div>
+          ))}
+          <button onClick={refreshData} className="bg-blue-500 text-white rounded p-1">
+            Refresh
+          </button>
+        </div>
+      )}
+    </div> */}
+
+
+
+
         <label htmlFor="name" className="w-100 h-1 text-white">
           Warranty Information
         </label>
@@ -338,20 +434,38 @@ export const getServerSideProps: GetServerSideProps = async () => {
     select: {
       id: true,
       mstatus: true,
-      category: true, 
-      from: true, 
+      category: true,
+      from: true,
       to: true,
-      performby: true, 
-      attach:true, 
-      estimateddate:true,
-      warrantyinfo:true, 
-      comment:true,
-    }
+      performby: true,
+      attach: true,
+      estimateddate: true,
+      warrantyinfo: true,
+      comment: true,
+      partId: true,
+      part: true,
+    },
   });
+
+  const parts = await prisma?.part.findMany({
+    select: {
+      name: true,
+      idp: true,
+      id: true,
+      quantity: true,
+      description: true,
+    },
+  });
+
+  // Check if the parts array is empty
+  const noParts = parts.length === 0;
+  
 
   return {
     props: {
-      statuss: statuss || [], // Ensure that mstatus is initialized even if it's null
-    }
+      parts: parts || [],
+      noParts: noParts, // Add a flag to indicate if there are no parts
+    },
   };
 };
+

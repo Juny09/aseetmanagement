@@ -16,8 +16,8 @@ interface FormData {
 }
 
 // Array interface
-interface Notes {
-  notes: {
+interface Parts {
+  parts: {
   id:string
   name:string
   idp:string
@@ -27,10 +27,10 @@ interface Notes {
 }
 
 // 从 getServerSideProps 服务器端渲染加载笔记
-// Load notes from getServerSideProps server side rendering
-const Home: NextPage<Notes> = ({ notes }) => {
+// Load parts from getServerSideProps server side rendering
+const Home: NextPage<Parts> = ({ parts }) => {
   const [form, setForm] = useState<FormData>({name:'', idp:'', quantity:'', description:'' ,id:''})
-  const [newNote, setNewNote] = useState<Boolean>(true)
+  const [newPart, setNewPart] = useState<Boolean>(true)
   const router = useRouter()
 
   const refreshData = () => {
@@ -39,14 +39,14 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   async function handleSubmit(data: FormData) {
     // console.log(data)
-    // console.log(newNote)
+    // console.log(newPart)
 
     try {
-      if (newNote) {
+      if (newPart) {
         // Check input is not blank
         if (data.name && data.idp) {
           // CREATE
-          fetch('api/create', {
+          fetch('api/partcreate', {
             body: JSON.stringify(data),
             headers: {
               'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
       }
       else {
         // UPDATE
-          fetch(`api/note/${data.id}`, {
+          fetch(`api/part/${data.id}`, {
             body: JSON.stringify(data),
             headers: {
               'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
             method: 'PUT'
           }).then(() => {
             setForm({ name: '', idp: '', quantity: '', description: '',id:''});
-            setNewNote(true)
+            setNewPart(true)
             refreshData()
           })
       }
@@ -80,16 +80,16 @@ const Home: NextPage<Notes> = ({ notes }) => {
     }
   }
 
-  async function updateNote(  name:string,idp:string,quantity:string,description:string,id:string) {
+  async function updatePart(  name:string,idp:string,quantity:string,description:string,id:string) {
 
     setForm({ name,idp,quantity,description,id})
-    setNewNote(false)
+    setNewPart(false)
   }
   
 
-  async function deleteNote(id: string) {
+  async function deletePart(id: string) {
     try {
-      fetch(`api/note/${id}`, {
+      fetch(`api/part/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -104,7 +104,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   function handleCancel() {
     setForm({name:'', idp:'', quantity:'', description:'', id:''})
-    setNewNote(true)
+    setNewPart(true)
   }
 
   return (
@@ -176,7 +176,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
 
 
-        {newNote ? (
+        {newPart ? (
           <div className='anibtn'>
           <button type="submit" className="relative left-1/2 transform -translate-x-1/2 font-bold text-white bg-white border-3 border-black rounded-full w-44 h-11 text-center transition-all duration-350 hover:bg-black hover:text-white">
             <span>Add +</span>
@@ -230,17 +230,17 @@ const Home: NextPage<Notes> = ({ notes }) => {
                 </thead>
 
                 <tbody>
-                    {notes.map((note, index) => (
-                      <tr key={note.id}>
+                    {parts.map((part, index) => (
+                      <tr key={part.id}>
                         <td>{index + 1}</td>
-                        <td>{note.name}</td>
-                        <td>{note.idp}</td>
-                        <td>{note.quantity}</td>
-                        <td>{note.description}</td>
+                        <td>{part.name}</td>
+                        <td>{part.idp}</td>
+                        <td>{part.quantity}</td>
+                        <td>{part.description}</td>
 
                         <td className="flex justify-center space-x-1">
-                          <button onClick={() => updateNote(note.name, note.idp, note.quantity, note.description, note.id)} className="bg-blue-500 px-3 			text-white rounded">Edit</button>
-                          <button onClick={() => deleteNote(note.id)} className="bg-red-500 px-3 text-white rounded">				X</button>
+                          <button onClick={() => updatePart(part.name, part.idp, part.quantity, part.description, part.id)} className="bg-blue-500 px-3 			text-white rounded">Edit</button>
+                          <button onClick={() => deletePart(part.id)} className="bg-red-500 px-3 text-white rounded">				X</button>
                         </td> 
                       </tr>
                     ))}
@@ -255,20 +255,19 @@ const Home: NextPage<Notes> = ({ notes }) => {
 export default Home
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  // READ all notes from DB
-  const notes = await prisma?.note.findMany({
+  const parts = await prisma?.part.findMany({
     select: {
       name: true,
       idp: true,
       id: true,
       quantity: true,
       description: true,
-    }
+    },
   });
 
   return {
     props: {
-      notes: notes || [], // Ensure that notes is initialized even if it's null
-    }
+      parts: parts || [],
+    },
   };
 };

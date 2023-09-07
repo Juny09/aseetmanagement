@@ -5,51 +5,59 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const spaceId = req.query.id
+  const statusId = req.query.id
   const {
-    country,
-    state,
-    area,
-    building,
-    floor,
-    zone,
-    dimensions,
-    areasq,
-    occupancy,
-    spacetype,
-    purposeusage,
     id,
+    mstatus, 
+    category, 
+    from, 
+    to, 
+    performby, 
+    attach, 
+    estimateddate,
+    warrantyinfo, 
+    comment,
+    partId,
   } = req.body
+
+    // Check if the partId exists in the Part table
+    const existingPart = await prisma.part.findUnique({
+      where: { id: partId },
+    });
+
+    if (!existingPart) {
+      // If the Part does not exist, return an error response
+      return res.status(404).json({ message: 'Part not found' });
+    }
+    
     // DELETE
     if (req.method === 'DELETE') {
-        const space = await prisma.space.delete({
-            where: { id: Number(spaceId) },
+        const status = await prisma.status.delete({
+            where: { id: Number(statusId) },
         })
-        res.json(space)
+        res.json(status)
     } 
     // UPDATE
     else if (req.method === 'PUT') {
-      const space = await prisma.space.update({
-        where: { id: Number(spaceId) },
+      const status = await prisma.status.update({
+        where: { id: Number(statusId) },
         data: {
-          country,
-          state,
-          area,
-          building,
-          floor,
-          zone,
-          dimensions,
-          areasq,
-          occupancy,
-          spacetype,
-          purposeusage
-          
+          mstatus, 
+          category, 
+          from, 
+          to, 
+          performby, 
+          attach, 
+          estimateddate,
+          warrantyinfo, 
+          comment,
+          partId,
         }
       })
-      res.status(200).json({ message: 'space updated' })
+      res.status(200).json({ message: 'status updated' })
     } 
     else {
-        console.log("space could not be modified")
-        res.status(400).json({ message: "space could not be modified" })
+        console.log("status could not be modified")
+        res.status(400).json({ message: "status could not be modified" })
     }
 }

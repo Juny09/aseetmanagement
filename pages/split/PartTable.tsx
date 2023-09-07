@@ -1,44 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import PartForm from './PartForm'; // Import the PartForm component
-import { Note } from './index'; // Make sure the path to Home.tsx is correct
+import { Part } from './index'; // Make sure the path to Home.tsx is correct
 
 
 interface PartTableProps {
-  notes: Note[];
-  updateNote: (updatedNote: Note) => void;
-  deleteNote: (id: string) => void;
+  parts: Part[];
+  updatePart: (updatedPart: Part) => void;
+  deletePart: (id: string) => void;
 }
 
-interface CombinedData extends Note, FormData {}  
+interface CombinedData extends Part, FormData {}  
 
-const PartTable: React.FC<PartTableProps> = ({ notes, updateNote, deleteNote }) => {
+const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) => {
   const [showEditPopup, setShowEditPopup] = useState<boolean>(false);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [updatedNote, setUpdatedNote] = useState<Note | null>(null);
+  const [selectedPart, setSelectedPart] = useState<Part | null>(null);
+  const [updatedPart, setUpdatedPart] = useState<Part | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>('Last 30 days');
 
-  const openEditPopup = (note: Note) => {
-    setSelectedNote(note);
-    setUpdatedNote({ ...note });
+  const openEditPopup = (part: Part) => {
+    setSelectedPart(part);
+    setUpdatedPart({ ...part });
     setShowEditPopup(true);
   };
 
   const closeEditPopup = () => {
-    setSelectedNote(null);
-    setUpdatedNote(null);
+    setSelectedPart(null);
+    setUpdatedPart(null);
     setShowEditPopup(false);
   };
 
   const handleUpdate = () => {
-    if (updatedNote) {
-      updateNote(updatedNote);
+    if (updatedPart) {
+      updatePart(updatedPart);
       closeEditPopup();
     }
   };
 
   const handleDelete = () => {
-    if (selectedNote) {
-      deleteNote(selectedNote.id);
+    if (selectedPart) {
+      deletePart(selectedPart.id);
       closeEditPopup();
     }
   };
@@ -129,16 +129,16 @@ const PartTable: React.FC<PartTableProps> = ({ notes, updateNote, deleteNote }) 
                     </tr>
                   </thead>
                     <tbody>
-                      {notes.map((note, index) => (
-                      <tr key={note.id} className="border-b dark:border-neutral-500">
+                      {parts.map((part, index) => (
+                      <tr key={part.id} className="border-b dark:border-neutral-500">
                         <td className="whitespace-nowrap px-6 py-4 font-medium">{index + 1}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{note.name}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{note.idp}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{note.quantity}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{note.description}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{part.name}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{part.idp}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{part.quantity}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{part.description}</td>
                         
                         <td className="flex justify-center space-x-1 whitespace-nowrap px-6 py-4">
-                            <button onClick={() => openEditPopup(note)} className="bg-blue-500 px-3 text-white rounded">
+                            <button onClick={() => openEditPopup(part)} className="bg-blue-500 px-3 text-white rounded">
                             Edit
                             </button>
                         </td>
@@ -154,16 +154,16 @@ const PartTable: React.FC<PartTableProps> = ({ notes, updateNote, deleteNote }) 
 
      
 
-              {showEditPopup && selectedNote && (
+              {showEditPopup && selectedPart && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
                   <div className="bg-black p-10 rounded shadow-lg w-[50%]">
                     <h2 className="text-center font-bold text-xl mb-4">Edit Part</h2>
                     
                     <PartForm
-                      initialForm={updatedNote as CombinedData}
-                      newNote={false}
+                      initialForm={updatedPart as CombinedData}
+                      newPart={false}
                       handleSubmit={(data) => {
-                        setUpdatedNote(data);
+                        setUpdatedPart(data);
                       }}
                       handleCancel={closeEditPopup}
                       

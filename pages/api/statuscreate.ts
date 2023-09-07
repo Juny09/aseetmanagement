@@ -10,37 +10,36 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { 
-    country,
-    state,
-    area,
-    building,
-    floor,
-    zone,
-    dimensions,
-    areasq,
-    occupancy,
-    spacetype,
-    purposeusage
+
+    mstatus, 
+    category, 
+    from, 
+    to, 
+    performby, 
+    attach, 
+    estimateddate,
+    warrantyinfo, 
+    comment,
+    partId,
    } = req.body;
 
   try {
     // CREATE
-    await prisma.space.create({
+    await prisma.status.create({
       data: {
-        country,
-        state,
-        area,
-        building,
-        floor,
-        zone,
-        dimensions,
-        areasq,
-        occupancy,
-        spacetype,
-        purposeusage
+        mstatus, 
+        category, 
+        from, 
+        to, 
+        performby, 
+        attach, 
+        estimateddate,
+        warrantyinfo, 
+        comment,
+        partId,
       },
     });
-    res.status(200).json({ message: 'Space created' });
+    res.status(200).json({ message: 'status created' });
   } catch (error: any) {
     console.log(error);
     res.status(400).json({ message: error.message });

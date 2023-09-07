@@ -7,7 +7,7 @@ import { prisma } from '../../lib/prisma';
 import { GetServerSideProps } from 'next';
 
 
-export interface Note {
+export interface Part {
   id: string;
   name: string;
   idp: string;
@@ -15,8 +15,8 @@ export interface Note {
   description: string;
 }
 
-interface Notes {
-  notes: Note[];
+interface Parts {
+  parts: Part[];
 }
 
 interface FormData {
@@ -27,7 +27,7 @@ interface FormData {
   id: string;
 }
 
-const Home: NextPage<Notes> = ({ notes }) => {
+const Home: NextPage<Parts> = ({ parts }) => {
   const [form, setForm] = useState<FormData>({
     name: '',
     idp: '',
@@ -35,11 +35,11 @@ const Home: NextPage<Notes> = ({ notes }) => {
     description: '',
     id: '',
   });
-  const [newNote, setNewNote] = useState<boolean>(true);
+  const [newPart, setNewPart] = useState<boolean>(true);
   const router = useRouter();
 
 
-  // ... (implement other functions: handleSubmit, updateNote, deleteNote, handleCancel)
+  // ... (implement other functions: handleSubmit, updatePart, deletePart, handleCancel)
 
   const refreshData = () => {
     router.replace(router.asPath)
@@ -47,14 +47,14 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   async function handleSubmit(data: FormData) {
     // console.log(data)
-    // console.log(newNote)
+    // console.log(newPart)
 
     try {
-      if (newNote) {
+      if (newPart) {
         // Check input is not blank
         if (data.name && data.idp) {
           // CREATE
-          fetch('api/create', {
+          fetch('api/partcreate', {
             body: JSON.stringify(data),
             headers: {
               'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
       }
       else {
         // UPDATE
-          fetch(`api/note/${data.id}`, {
+          fetch(`api/part/${data.id}`, {
             body: JSON.stringify(data),
             headers: {
               'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
             method: 'PUT'
           }).then(() => {
             setForm({ name: '', idp: '', quantity: '', description: '',id:''});
-            setNewNote(true)
+            setNewPart(true)
             refreshData()
           })
       }
@@ -87,22 +87,22 @@ const Home: NextPage<Notes> = ({ notes }) => {
       console.log(error)
     }
   }
-  async function updateNote(updatedNote: Note) {
-    console.log("Updating Note:", updatedNote);
+  async function updatePart(updatedPart: Part) {
+    console.log("Updating Part:", updatedPart);
   
     setForm({
-      name: updatedNote.name,
-      idp: updatedNote.idp,
-      quantity: String(updatedNote.quantity),
-      description: updatedNote.description,
-      id: updatedNote.id,
+      name: updatedPart.name,
+      idp: updatedPart.idp,
+      quantity: String(updatedPart.quantity),
+      description: updatedPart.description,
+      id: updatedPart.id,
     });
-    setNewNote(false);
+    setNewPart(false);
   }
 
-  async function deleteNote(id: string) {
+  async function deletePart(id: string) {
     try {
-      fetch(`api/note/${id}`, {
+      fetch(`api/part/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -117,7 +117,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 
   function handleCancel() {
     setForm({name:'', idp:'', quantity:'', description:'', id:''})
-    setNewNote(true)
+    setNewPart(true)
   }
 
   return (
@@ -125,7 +125,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
       <h1 className="text-center font-bold text-2xl m-4">Parts</h1>
       <PartForm
         initialForm={form}
-        newNote={newNote}
+        newPart={newPart}
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
         
@@ -135,9 +135,9 @@ const Home: NextPage<Notes> = ({ notes }) => {
       <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
         <h2 className="text-center font-bold text-xl mt-4">Part List</h2>
         <PartTable
-          notes={notes}
-          updateNote={updateNote}
-          deleteNote={deleteNote}
+          parts={parts}
+          updatePart={updatePart}
+          deletePart={deletePart}
         />
       </div>
 
@@ -146,7 +146,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const notes = await prisma?.note.findMany({
+  const parts = await prisma?.part.findMany({
     select: {
       name: true,
       idp: true,
@@ -158,7 +158,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      notes: notes || [],
+      parts: parts || [],
     },
   };
 };

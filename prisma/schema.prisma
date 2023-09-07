@@ -10,15 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Note {
-  id Int @id @default(autoincrement())
-  name String
-  idp String
-  quantity String
-  description String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+
 
 model Asset{
   id Int @id @default(autoincrement())
@@ -77,4 +69,33 @@ model Product {
   brand     Brand    @relation(fields: [brandId], references: [id])
   brandId   Int
 
+}
+
+model Part {
+  id Int @id @default(autoincrement())
+  name String
+  idp String @unique
+  quantity String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Status[]
+}
+
+model Status {
+  id Int @id @default(autoincrement())
+  mstatus String
+  category String
+  from String
+  to String
+  performby String
+  attach String
+  estimateddate String
+  warrantyinfo String
+  comment String
+  part Part @relation(fields: [partId], references: [idp])
+  partId String   // Change the data type to Int to match the `id` field in the `Part` model
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

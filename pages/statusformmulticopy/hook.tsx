@@ -1,4 +1,4 @@
-import { useState } from 'react';
+  import { useState } from 'react';
 
 interface FormData {
   id: string;
@@ -11,6 +11,7 @@ interface FormData {
   estimateddate: string
   warrantyinfo: string
   comment: string
+  partId: string
 }
 
 export function useForm() {
@@ -26,6 +27,7 @@ export function useForm() {
     estimateddate:'',
     warrantyinfo:'',
     comment:'',
+    partId:'',
   });
 
   const nextStep = () => {
@@ -49,6 +51,7 @@ export function useForm() {
       estimateddate:'',
       warrantyinfo:'',
       comment:'',
+      partId:'',
     });
   };
 

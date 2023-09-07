@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Note } from './index'; // Make sure the path to the index.ts file is correct
+import { Part } from './index'; // Make sure the path to the index.ts file is correct
 
 interface FormData {
   name: string;
@@ -9,18 +9,18 @@ interface FormData {
   id: string;
 }
 
-interface CombinedData extends Note, FormData {}
+interface CombinedData extends Part, FormData {}
 
 interface PartFormProps {
   initialForm: FormData;
-  newNote: boolean;
+  newPart: boolean;
   handleSubmit: (data: FormData) => void;
   handleCancel: () => void;
 }
 
 const PartForm: React.FC<PartFormProps> = ({
   initialForm,
-  newNote,
+  newPart,
   handleSubmit,
   handleCancel,
 }) => {
@@ -37,8 +37,8 @@ const PartForm: React.FC<PartFormProps> = ({
           className="w-auto min-w-[25%] max-w-min mx-auto space-y-6 flex flex-col items-stretch"
           onSubmit={(e) => {
             e.preventDefault();
-            if (newNote) {
-              handleAdd(); // Call handleAdd when adding a new note
+            if (newPart) {
+              handleAdd(); // Call handleAdd when adding a new part
             } else {
               handleSubmit(form); // Call handleSubmit when updating
             }
@@ -95,7 +95,7 @@ const PartForm: React.FC<PartFormProps> = ({
               </span>
             </div>
             <br></br>
-          {newNote ? (
+          {newPart ? (
               <div className='anibtn'>
               <button type="submit" className="relative left-1/2 transform -translate-x-1/2 font-bold text-white bg-white border-3 border-black rounded-full w-44 h-11 text-center transition-all duration-350 hover:bg-black hover:text-white text-black">
                 <span>Add +</span>

@@ -5,19 +5,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const noteId = req.query.id
+  const partId = req.query.id
   const {name, idp, quantity, description, id} = req.body
     // DELETE
     if (req.method === 'DELETE') {
-        const note = await prisma.note.delete({
-            where: { id: Number(noteId) }
+        const part = await prisma.part.delete({
+            where: { id: Number(partId) }
         })
-        res.json(note)
+        res.json(part)
     } 
     // UPDATE
     else if (req.method === 'PUT') {
-      const note = await prisma.note.update({
-        where: { id: Number(noteId) },
+      const part = await prisma.part.update({
+        where: { id: Number(partId) },
         data: {
           name,
           idp, 
@@ -25,10 +25,10 @@ export default async function handler(
           description
         }
       })
-      res.status(200).json({ message: 'Note updated' })
+      res.status(200).json({ message: 'part updated' })
     } 
     else {
-        console.log("Note could not be modified")
-        res.status(400).json({ message: "Note could not be modified" })
+        console.log("part could not be modified")
+        res.status(400).json({ message: "part could not be modified" })
     }
 }

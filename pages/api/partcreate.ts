@@ -13,7 +13,7 @@ export default async function handler(
 
   try {
     // CREATE
-    await prisma.note.create({
+    await prisma.part.create({
       data: {
         name,
         idp,
@@ -21,7 +21,7 @@ export default async function handler(
         description,
       },
     });
-    res.status(200).json({ message: 'Note created' });
+    res.status(200).json({ message: 'part created' });
   } catch (error: any) {
     console.log(error);
     res.status(400).json({ message: error.message });

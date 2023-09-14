@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { prisma } from '../lib/prisma'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -107,6 +107,56 @@ const Home: NextPage<Parts> = ({ parts }) => {
     setNewPart(true)
   }
 
+  useEffect(() => {
+    //table
+    const filterTableFunc = () => {
+    const filterResult = (document.getElementById("search") as HTMLInputElement).value.toLowerCase();
+    const Table = document.getElementById("Data");
+    if (Table) {
+        const tr = Table.getElementsByTagName("tr");
+        for (let i = 1; i < tr.length; i++) {
+        const rowStyle = tr[i].style;
+        if (rowStyle) {
+            rowStyle.display = "none";
+            const tdArray = tr[i].getElementsByTagName("td");
+            for (let j = 0; j < tdArray.length; j++) {
+            const tdText = tdArray[j].textContent;
+            if (tdText && tdText.toLowerCase().indexOf(filterResult) > -1) {
+                rowStyle.display = "";
+                break;
+            }
+            }
+        }
+        }
+    }
+    };
+
+    // Call the filtering function when the search input changes
+    const searchInput = document.getElementById("search") as HTMLInputElement | null;
+    if (searchInput) {
+    searchInput.addEventListener("input", filterTableFunc);
+    }
+
+// Clean up the event listener when the component unmounts
+return () => {
+    if (searchInput) {
+    searchInput.removeEventListener("input", filterTableFunc);
+    }
+};
+}, []);
+
+//sort function
+useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://www.kryogenix.org/code/browser/sorttable/sorttable.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+    document.body.removeChild(script);
+    };
+}, []);
+
   return (
     <div className=''>
       <Head>
@@ -203,52 +253,52 @@ const Home: NextPage<Parts> = ({ parts }) => {
         )}
       </form>
 
-      <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
-        <h2 className="text-center font-bold text-xl mt-4">Part List</h2>
+
+      <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch text-white">
+        <h2 className="text-center font-bold text-xl mt-4 ">Part List</h2>
         <table id="Data" className="sortable" >
-                <thead>
-                    <tr>
-                        <th scope="col" className="px-6 py-3">
-                            No
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Part name
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            ID
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Quantity
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Description
-                        </th><th scope="col" className="px-6 py-3">
-                            Action
-                        </th>
+          <thead>
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                No
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Part name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                ID
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Description
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {parts.map((part, index) => (
+              <tr key={part.id}>
+                <td>{index + 1}</td>
+                <td>{part.name}</td>
+                <td>{part.idp}</td>
+                <td>{part.quantity}</td>
+                <td>{part.description}</td>
 
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {parts.map((part, index) => (
-                      <tr key={part.id}>
-                        <td>{index + 1}</td>
-                        <td>{part.name}</td>
-                        <td>{part.idp}</td>
-                        <td>{part.quantity}</td>
-                        <td>{part.description}</td>
-
-                        <td className="flex justify-center space-x-1">
-                          <button onClick={() => updatePart(part.name, part.idp, part.quantity, part.description, part.id)} className="bg-blue-500 px-3 			text-white rounded">Edit</button>
-                          <button onClick={() => deletePart(part.id)} className="bg-red-500 px-3 text-white rounded">				X</button>
-                        </td> 
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-      </div>
-
+                <td className="flex justify-center space-x-1">
+                  <button onClick={() => updatePart(part.name, part.idp, part.quantity, part.description, part.id)} className="bg-blue-500 px-3 text-white rounded">Edit</button>
+                  <button onClick={() => deletePart(part.id)} className="bg-red-500 px-3 text-white rounded">				X</button>
+                </td> 
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      <br/>
     </div>
+  </div>
   )
 }
 

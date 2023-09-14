@@ -12,90 +12,92 @@ datasource db {
 
 
 
-model Asset{
-  id Int @id @default(autoincrement())
-  ename String
-  ide String
-  type String
-  subtype String
-  manufacturer String
-  modelnum String
-  serialnum String
-  datepurc String
-  install String
-  controlsys String
-  commission String
-  datasheet String
-  connection String
-  foundation String
-  mechanical String
-  electrical String
-  ratedeffiency String
+model asset{
+  id                Int @id @default(autoincrement())
+  ename             String
+  ide               String
+  type              String
+  subtype           String
+  manufacturer      String
+  modelnum          String
+  serialnum         String
+  datepurc          String
+  install           String
+  controlsys        String
+  commission        String
+  datasheet         String
+  connection        String
+  foundation        String
+  mechanical        String
+  electrical        String
+  ratedeffiency     String
   deviceassociation String
-  generalnote String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  generalnote       String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
-model Space{
-  id Int @id @default(autoincrement())
-  country String
-  state String
-  area String
-  building String
-  floor String
-  zone String
-  dimensions String
-  areasq String
-  occupancy String
-  spacetype String
-  purposeusage String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model space{
+  id            Int @id @default(autoincrement())
+  country       String
+  state         String
+  area          String
+  building      String
+  floor         String
+  zone          String
+  dimensions    String
+  areasq        String
+  occupancy     String
+  spacetype     String
+  purposeusage  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
-model Brand {
+model part {
+  id          Int @id @default(autoincrement())
+  name        String
+  idp         String @unique
+  quantity    String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  status      status[]
+}
+
+model status {
+  id            Int @id @default(autoincrement())
+  mstatus       String
+  category      String
+  from          String
+  to            String
+  performby     String
+  attach        String
+  estimateddate String
+  warrantyinfo  String
+  comment       String
+  part  part    @relation(fields: [partId], references: [idp])
+  partId        String   // Change the data type to Int to match the `id` field in the `Part` model 
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model brand {
   id       Int       @id @default(autoincrement())
   name     String
-  products Product[]
+  bid      String    @unique
+  iot      iot[]
 }
 
-model Product {
+model iot {
   id        Int      @id @default(autoincrement())
-  title     String
-  price     Int
+  devname   String
+  devid     String
+  devtype   String
+  deveui    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  brand     Brand    @relation(fields: [brandId], references: [id])
-  brandId   Int
+  brand     brand    @relation(fields: [brandId], references: [bid])
+  brandId   String
 
-}
-
-model Part {
-  id Int @id @default(autoincrement())
-  name String
-  idp String @unique
-  quantity String
-  description String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  status Status[]
-}
-
-model Status {
-  id Int @id @default(autoincrement())
-  mstatus String
-  category String
-  from String
-  to String
-  performby String
-  attach String
-  estimateddate String
-  warrantyinfo String
-  comment String
-  part Part @relation(fields: [partId], references: [idp])
-  partId String   // Change the data type to Int to match the `id` field in the `Part` model
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

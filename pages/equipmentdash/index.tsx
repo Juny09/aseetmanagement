@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import AssetForm from './equipmentform'; // Import the PartTable component
+import AssetForm from './equipmentdashform'; // Import the PartTable component
 import { prisma } from '../../lib/prisma';
 import { GetServerSideProps } from 'next';
-import AssetTable from './equipmenttable'; // Import the PartTable component
+import AssetTable from './equipmentdashtable'; // Import the PartTable component
 
 export interface Asset {
     id:string;
@@ -287,7 +287,7 @@ const Home: NextPage<Assets> = ({ assets }) => {
             </a>
           </button>
           <div className="custom-dropdown-content">
-            <a href="#" className="custom-bar-item text-white">
+            <a href="../equipmentform" className="custom-bar-item text-white">
               Form
             </a>
             <a href="#" className="custom-bar-item text-white">

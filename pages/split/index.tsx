@@ -138,6 +138,7 @@ const Home: NextPage<Parts> = ({ parts }) => {
           parts={parts}
           updatePart={updatePart}
           deletePart={deletePart}
+          
         />
       </div>
 

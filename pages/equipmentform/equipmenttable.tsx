@@ -4,9 +4,9 @@ import { Asset } from './index'; // Make sure the path to Home.tsx is correct
 
 
 interface AssetTableProps {
-  assets: Asset[]; // Change from 'notes' to 'assets'
-  updateAsset: (updatedAsset: Asset) => void; // Change 'updatedNote' to 'updatedAsset'
-  deleteAsset: (id: string) => void; // Change 'deleteNote' to 'deleteAsset'
+  assets: Asset[]; 
+  updateAsset: (updatedAsset: Asset) => void; 
+  deleteAsset: (id: string) => void; 
 }
 
 interface CombinedData extends Asset, FormData {}  
@@ -200,9 +200,8 @@ const AssetTable: React.FC<AssetTableProps> = ({ assets, updateAsset, deleteAsse
           </div>
         </div>
 
-     
-
-              {showEditPopup && selectedAsset && (
+    
+        {showEditPopup && selectedAsset && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
                   <div className="bg-black p-10 rounded shadow-lg w-[50%]">
                     <h2 className="text-center font-bold text-xl mb-4">Edit Part</h2>
@@ -220,6 +219,7 @@ const AssetTable: React.FC<AssetTableProps> = ({ assets, updateAsset, deleteAsse
                   </div>
         </div>
       )}
+
     <br></br>
     </div>
   );

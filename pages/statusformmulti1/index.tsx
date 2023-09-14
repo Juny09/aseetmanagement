@@ -5,7 +5,7 @@ import { prisma } from '../../lib/prisma'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useForm } from './hook'; 
-import type { Part } from "@prisma/client";
+import type { part } from "@prisma/client";
 
 
 interface FormData {
@@ -40,7 +40,7 @@ interface Status {
 }
 
 // Load mstatus from getServerSideProps server side rendering
-const Home: NextPage<Status & { parts: Part[]; noParts: boolean  }> = ({ status, parts, noParts  }) => {
+const Home: NextPage<Status & { parts: part[]; noParts: boolean  }> = ({ status, parts, noParts  }) => {
   const { step, form, setForm, nextStep, prevStep, resetForm } = useForm();
   const [newStatus, setNewStatus] = useState<Boolean>(true);
   const router = useRouter();
@@ -74,7 +74,7 @@ const Home: NextPage<Status & { parts: Part[]; noParts: boolean  }> = ({ status,
               comment:'',
               partId:'',});
             refreshData();
-            router.push('/statusformmulticopy'); // Redirect to the dashboard page
+            router.push('/statusdash'); // Redirect to the dashboard page
           });
         } else {
           alert("Part status can not be blank");
@@ -272,7 +272,7 @@ const Home: NextPage<Status & { parts: Part[]; noParts: boolean  }> = ({ status,
         <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
               </svg>
               <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
@@ -315,6 +315,7 @@ const Home: NextPage<Status & { parts: Part[]; noParts: boolean  }> = ({ status,
         // Proceed with the submission
         handleSubmit(form); // This handles both create and update
         nextStep();
+        prevStep();
       } else {
         // Show an alert message if inputs are missing
         alert("Please fill in Quantity and Description fields.");

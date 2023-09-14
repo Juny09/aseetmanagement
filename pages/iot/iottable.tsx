@@ -1,43 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import PartForm from './PartForm'; // Check the correct path to PartForm
-import { Part } from './index'; // Verify the path to 'Part' and 'Home.tsx'
+import Cobi from '../index'; // Import the PartForm component
+import { Iot } from './index'; // Make sure the path to Home.tsx is correct
 
-interface PartTableProps {
-  parts: Part[];
-  updatePart: (updatedPart: Part) => void;
-  deletePart: (id: string) => void;
+interface IotTableProps {
+  iots: Iot[];
+  updateIot: (updatedIot: Iot) => void;
+  deleteIot: (id: string) => void;
+  brands: Brand[];
 }
 
-interface CombinedData extends Part, FormData {}
+interface Brand {
+  id: string;
+  name: string;
+  bid: string;
+}
 
-const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) => {
+interface CombinedData extends Iot, FormData {}  
+
+const IotTable: React.FC<IotTableProps> = ({ iots, updateIot, deleteIot, brands }) => {
   const [showEditPopup, setShowEditPopup] = useState<boolean>(false);
-  const [selectedPart, setSelectedPart] = useState<Part | null>(null);
-  const [updatedPart, setUpdatedPart] = useState<Part | null>(null);
+  const [selectedIot, setSelectedIot] = useState<Iot | null>(null);
+  const [updatedIot, setUpdatedIot] = useState<Iot | null>(null);
 
-  const openEditPopup = (part: Part) => {
-    setSelectedPart(part);
-    setUpdatedPart({ ...part });
+  const openEditPopup = (iot: Iot) => {
+    setSelectedIot(iot);
+    setUpdatedIot({ ...iot });
     setShowEditPopup(true);
   };
 
   const closeEditPopup = () => {
-    setSelectedPart(null);
-    setUpdatedPart(null);
+    setSelectedIot(null);
+    setUpdatedIot(null);
     setShowEditPopup(false);
   };
 
   const handleUpdate = () => {
-    if (updatedPart) {
-      // Call the updatePart function with the updatedPart data
-      updatePart(updatedPart);
-      // Close the edit popup
+    if (updatedIot) {
+      updateIot(updatedIot);
       closeEditPopup();
     }
   };
+
   const handleDelete = () => {
-    if (selectedPart) {
-      deletePart(selectedPart.id);
+    if (selectedIot) {
+      deleteIot(selectedIot.id);
       closeEditPopup();
     }
   };
@@ -70,13 +76,13 @@ const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) 
             // Call the filtering function when the search input changes
             const searchInput = document.getElementById("search") as HTMLInputElement | null;
             if (searchInput) {
-            searchInput.addEventListener("input", filterTableFunc);
+              searchInput.addEventListener("input", filterTableFunc);
             }
         
         // Clean up the event listener when the component unmounts
         return () => {
             if (searchInput) {
-            searchInput.removeEventListener("input", filterTableFunc);
+              searchInput.removeEventListener("input", filterTableFunc);
             }
         };
         }, []);
@@ -96,7 +102,8 @@ const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) 
        
 
     return (
-      <div className="text-white w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
+      
+      <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
 
         <div className="relative mt-1">
           
@@ -120,24 +127,29 @@ const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) 
                   <thead className="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900">
                     <tr>
                       <th scope="col" className="px-6 py-4">#</th>
-                      <th scope="col" className="px-6 py-4">Part name</th>
-                      <th scope="col" className="px-6 py-4">ID</th>
-                      <th scope="col" className="px-6 py-3">Quantity</th>
-                      <th scope="col" className="px-20 py-3">Description</th>
-                      <th scope="col" className="px-6 py-3">Action</th>
+                      <th scope="col" className="px-6 py-4">IOT Device name</th>
+                      <th scope="col" className="px-6 py-4">IOT ID</th>
+                      <th scope="col" className="px-6 py-4">IOT Type</th>
+                      <th scope="col" className="px-6 py-4">Brand</th>
+                      <th scope="col" className="px-6 py-4">EUI</th>
                     </tr>
                   </thead>
+                  
                     <tbody>
-                      {parts.map((part, index) => (
-                      <tr key={part.id} className="border-b dark:border-neutral-500">
-                        <td className="whitespace-nowrap px-6 py-4 font-medium">{index + 1}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{part.name}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{part.idp}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{part.quantity}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{part.description}</td>
+                      {iots.map((iot, index) => (
+                      <tr key={iot.id} className="border-b dark:border-neutral-500">
+                        {/* Index */}
+                        <td className="whitespace-nowrap px-6 py-4 font-medium text-white">{index + 1}</td>
+                          
+                          {/* Basic Information */}
+                          <td className="whitespace-nowrap px-6 py-4 text-white">{iot.devname}</td>
+                          <td className="whitespace-nowrap px-6 py-4 text-white">{iot.devid}</td>
+                          <td className="whitespace-nowrap px-6 py-4 text-white">{iot.devtype}</td>
+                          <td className="whitespace-nowrap px-6 py-4 text-white">{iot.brandId}</td>
+                          <td className="whitespace-nowrap px-6 py-4 text-white">{iot.deveui}</td>
                         
                         <td className="flex justify-center space-x-1 whitespace-nowrap px-6 py-4">
-                            <button onClick={() => openEditPopup(part)} className="bg-blue-500 px-3 text-white rounded">
+                            <button onClick={() => openEditPopup(iot)} className="bg-blue-500 px-3 text-white rounded">
                             Edit
                             </button>
                         </td>
@@ -147,34 +159,35 @@ const PartTable: React.FC<PartTableProps> = ({ parts, updatePart, deletePart }) 
                 </table>
 
               </div>
+ 
+
             </div>
           </div>
         </div>
 
-     
-
-              {showEditPopup && selectedPart && (
+    
+        {showEditPopup && selectedIot && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-                  <div className="bg-black p-10 rounded shadow-lg w-[100%]">
+                  <div className="bg-black p-10 rounded shadow-lg w-[50%]">
                     <h2 className="text-center font-bold text-xl mb-4">Edit Part</h2>
                     
-                    <PartForm
-                      initialForm={updatedPart as CombinedData}
-                      newPart={false}
-                      handleSubmit={(data) => {
-                        setUpdatedPart(data);
+                    <Cobi
+                      initialForm={updatedIot as FormData} // Updated to match the expected type
+                      newIot={false}
+                      handleSubmit={(data: FormData) => {
+                        setUpdatedIot(data);
                       }}
                       handleCancel={closeEditPopup}
-                      
-                    />
+/>
 
                   </div>
         </div>
       )}
+
     <br></br>
     </div>
   );
 };
 
 
-export default PartTable;
+export default IotTable;

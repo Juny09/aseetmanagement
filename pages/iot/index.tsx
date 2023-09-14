@@ -2,161 +2,72 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import SpaceForm from './spaceform'; // Import the PartTable component
+// import IotForm from './iotform'; // Import the PartTable component
 import { prisma } from '../../lib/prisma';
 import { GetServerSideProps } from 'next';
-import SpaceTable from './spacetable'; // Import the PartTable component
+import IotTable from './iottable'; // Import the PartTable component
 
-export interface Space {
-  country: string;
-  state: string;
-  area: string;
-  building: string;
-  floor: string;
-  zone: string;
-  dimensions: string;
-  areasq: string;
-  occupancy: string;
-  spacetype: string;
-  purposeusage: string;
+export interface Iot {
   id:string;
-    
+  devname: string;
+  devid: string;
+  devtype: string;
+  deveui: string;
+  brandId: string;
 }
 
-interface Spaces {
-    spaces: Space[];
+interface Iots {
+    iots: Iot[];
 }
 
 export interface FormData {
-  country: string;
-  state: string;
-  area: string;
-  building: string;
-  floor: string;
-  zone: string;
-  dimensions: string;
-  areasq: string;
-  occupancy: string;
-  spacetype: string;
-  purposeusage: string;
   id:string;
-    
+  devname: string;
+  devid: string;
+  devtype: string;
+  deveui: string;
+  brandId: string;
 }
 
-const Home: NextPage<Spaces> = ({ spaces }) => {
+interface CombinedData extends Iot, FormData {}
+
+const Home: NextPage<Iots> = ({ iots }) => {
+
   const [form, setForm] = useState<FormData>({
-    country: '',
-    state: '',
-    area: '',
-    building: '',
-    floor: '',
-    zone: '',
-    dimensions: '',
-    areasq: '',
-    occupancy: '',
-    spacetype: '',
-    purposeusage: '',
-    id: '',
+    id:'',
+    devname:'',
+    devid:'',
+    devtype:'',
+    deveui:'',
+    brandId:'',
   });
-  const [newSpace, setNewSpace] = useState<boolean>(true);
+  const [newIot, setNewIot] = useState<boolean>(true);
   const router = useRouter();
 
-
   // ... (implement other functions: handleSubmit, updateNote, deleteNote, handleCancel)
-
+  const [brands, setBrands] = useState([]);
   const refreshData = () => {
     router.replace(router.asPath)
   }
 
-  async function handleSubmit(data: FormData) {
-    // console.log(data)
-    // console.log(newNote)
 
-    try {
-      if (newSpace) {
-        // Check input is not blank
-        if (data.country && data.state) {
-          // CREATE
-          fetch('api/spacecreate', {
-            body: JSON.stringify(data),
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            method: 'POST'
-          }).then(() => {
-            setForm({
-              country: '',
-              state: '',
-              area: '',
-              building: '',
-              floor: '',
-              zone: '',
-              dimensions: '',
-              areasq: '',
-              occupancy: '',
-              spacetype: '',
-              purposeusage: '',
-              id: '',})
-            refreshData()
-          })
-        }
-        else {
-          alert("Country name and state can not be blank")
-        }
-      }
-      else {
-        // UPDATE
-        fetch(`api/space/${data.id}`, {
-            body: JSON.stringify(data),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'PUT'
-          }).then(() => {
-            setForm({ 
-              country: '',
-              state: '',
-              area: '',
-              building: '',
-              floor: '',
-              zone: '',
-              dimensions: '',
-              areasq: '',
-              occupancy: '',
-              spacetype: '',
-              purposeusage: '',
-              id:'',});
-            setNewSpace(true)
-            refreshData()
-          })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  async function updateSpace(updatedSpace: Space) {
-    console.log("Updating Space:", updatedSpace);
+  async function updateIot(updatedIot: Iot) {
+    console.log("Updating Iot:", updatedIot);
   
     setForm({
-      country: updatedSpace.country,
-      state: updatedSpace.state,
-      area: updatedSpace.area,
-      building: updatedSpace.building,
-      floor: updatedSpace.floor,
-      zone: updatedSpace.zone,
-      dimensions: updatedSpace.dimensions,
-      areasq: updatedSpace.areasq,
-      occupancy: updatedSpace.occupancy,
-      spacetype: updatedSpace.spacetype,
-      purposeusage: updatedSpace.purposeusage,
-      id: updatedSpace.id,
+      id: updatedIot.id,
+      devname: updatedIot.devname,
+      devid: updatedIot.devid,
+      devtype: updatedIot.devtype,
+      deveui: updatedIot.deveui,
+      brandId: updatedIot.brandId,
     });
-    setNewSpace(false);
+    setNewIot(false);
   }
 
-  async function deleteSpace(id: string) {
+  async function deleteIot(id: string) {
     try {
-      fetch(`api/space/${id}`, {
+      fetch(`api/iot/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -171,20 +82,14 @@ const Home: NextPage<Spaces> = ({ spaces }) => {
 
   function handleCancel() {
     setForm({
-      country: '',
-      state: '',
-      area: '',
-      building: '',
-      floor: '',
-      zone: '',
-      dimensions: '',
-      areasq: '',
-      occupancy: '',
-      spacetype: '',
-      purposeusage: '',
-      id: '',
+      id:'',
+      devname:'',
+      devid:'',
+      devtype:'',
+      deveui:'',
+      brandId:'',
   })
-    setNewSpace(true)
+    setNewIot(true)
   }
 
     const [isNavOpen, setIsNavOpen] = useState(false);
@@ -232,7 +137,7 @@ const Home: NextPage<Spaces> = ({ spaces }) => {
         <div className="custom-dropdown-hover">
           <button className="custom-button ">
             <a href="./assetdas" className="text-white">
-              Asset <i className="custom-caret-down"></i>
+              Iot <i className="custom-caret-down"></i>
             </a>
           </button>
           <div className="custom-dropdown-content">
@@ -293,12 +198,14 @@ const Home: NextPage<Spaces> = ({ spaces }) => {
         >
           &#9776;
         </span>
+
     <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
-        <h2 className="text-center font-bold text-xl mt-4">Space List</h2>
-        <SpaceTable
-          spaces={spaces}
-          updateSpace={updateSpace}
-          deleteSpace={deleteSpace}
+        <h2 className="text-center font-bold text-xl mt-4">Iot List</h2>
+        <IotTable
+          iots={iots}
+          updateIot={updateIot}
+          deleteIot={deleteIot}
+          brands={brands} 
         />
       </div>
     </div>
@@ -309,26 +216,29 @@ const Home: NextPage<Spaces> = ({ spaces }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const spaces = await prisma?.space.findMany({
+  const iots = await prisma?.iot.findMany({
     select: {
-      country: true,
-      state: true,
-      area: true,
-      building: true,
-      floor: true,
-      zone: true,
-      dimensions: true,
-      areasq: true,
-      occupancy: true,
-      spacetype: true,
-      purposeusage: true,
       id: true,
+      devname: true,
+      devid: true,
+      devtype: true,
+      deveui: true,
+      brandId: true,
+    },
+  });
+
+  const brands = await prisma?.brand.findMany({
+    select: {
+      id: true,
+      name: true,
+      bid: true,
     },
   });
 
   return {
     props: {
-      spaces: spaces || [],
+      iots: iots || [],
+      brands: brands || [],
     },
   };
 };

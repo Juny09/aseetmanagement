@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AssetForm from './equipmentform'; // Import the PartForm component
+import AssetForm from './equipmentdashform'; // Import the PartForm component
 import { Asset } from './index'; // Make sure the path to Home.tsx is correct
 
 
@@ -96,12 +96,14 @@ const AssetTable: React.FC<AssetTableProps> = ({ assets, updateAsset, deleteAsse
        
 
     return (
+      
       <div className="w-auto min-w-[25%] max-w-min mt-10 mx-auto space-y-6 flex flex-col items-stretch">
-        <h2 className="text-center font-bold text-xl mt-4 text-white">Asset Information</h2>
-          <div className="relative mt-1">
+
+        <div className="relative mt-1">
+          
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
             </div>
             <input
@@ -202,7 +204,7 @@ const AssetTable: React.FC<AssetTableProps> = ({ assets, updateAsset, deleteAsse
 
               {showEditPopup && selectedAsset && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-                  <div className="bg-black p-10 rounded shadow-lg w-[50%]">
+                  <div className="bg-black p-10 rounded shadow-lg w-[100%]">
                     <h2 className="text-center font-bold text-xl mb-4">Edit Part</h2>
                     
                     <AssetForm
@@ -214,10 +216,9 @@ const AssetTable: React.FC<AssetTableProps> = ({ assets, updateAsset, deleteAsse
                       handleCancel={closeEditPopup}
                       
                     />
-
                   </div>
-        </div>
-      )}
+                </div>
+              )}
     <br></br>
     </div>
   );

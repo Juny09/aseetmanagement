@@ -28,22 +28,26 @@ const PartForm: React.FC<PartFormProps> = ({
 
   const handleAdd = () => {
     handleSubmit(form);
-    setForm(initialForm); // Reset the form to initial values after submitting
+    setForm(initialForm);
+  };
+
+  const handleUpdate = () => {
+    console.log("Update button clicked"); // Add this line to check if the button click is detected
+    handleSubmit(form);
   };
 
   return (
-
-        <form
-          className="w-auto min-w-[25%] max-w-min mx-auto space-y-6 flex flex-col items-stretch"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (newPart) {
-              handleAdd(); // Call handleAdd when adding a new part
-            } else {
-              handleSubmit(form); // Call handleSubmit when updating
-            }
-          }}
-        >
+    <form
+      className="w-auto min-w-[25%] max-w-min mx-auto space-y-6 flex flex-col items-stretch"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (newPart) {
+          handleAdd();
+        } else {
+          handleUpdate(); // Call handleUpdate when updating
+        }
+      }}
+    >
           <div className="field field_v1">
             <label htmlFor="name" className="w-1 h-1 p-0 border-0 absolute clip w-[1px] h-[1px] overflow-hidden">Part Name</label>
             <input type="text" 
@@ -95,10 +99,11 @@ const PartForm: React.FC<PartFormProps> = ({
               </span>
             </div>
             <br></br>
-          {newPart ? (
-              <div className='anibtn'>
-              <button type="submit" className="relative left-1/2 transform -translate-x-1/2 font-bold text-white bg-white border-3 border-black rounded-full w-44 h-11 text-center transition-all duration-350 hover:bg-black hover:text-white text-black">
-                <span>Add +</span>
+            
+        {newPart ? (
+          <div className='anibtn'>
+            <button type="submit" className="relative left-1/2 transform -translate-x-1/2 font-bold text-white bg-white border-3 border-black rounded-full w-44 h-11 text-center transition-all duration-350 hover:bg-black hover:text-white text-black">
+              <span>Add +</span>
                 <div className="absolute top-0 left-0 w-full h-full bg-white rounded-full opacity-0 invisible transition-all duration-350 success">
                   <svg
                     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -112,26 +117,30 @@ const PartForm: React.FC<PartFormProps> = ({
                     />
                   </svg>
                 </div>
-              </button>
-              </div>
-          ) : (
-            <>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white rounded p-1"
-              >
-                Update
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-red-500 text-white rounded p-1"
-              >
-                Cancel
-              </button>
-            </>
-          )}
-        </form>
-
+                </button>
+        </div>
+      ) : (
+        <>
+          <button
+            type="submit"
+            onClick={handleUpdate}
+            className={`${
+              newPart
+                ? "bg-blue-500 text-white rounded p-1"
+                : "bg-green-500 text-white rounded p-1"
+            }`}
+          >
+            {newPart ? "Add" : "Update"}
+          </button>
+          <button
+            onClick={handleCancel}
+            className="bg-red-500 text-white rounded p-1"
+          >
+            Cancel
+          </button>
+        </>
+      )}
+    </form>
   );
 };
 

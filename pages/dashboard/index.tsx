@@ -14,8 +14,8 @@ interface FormData {
   id: string;
 }
 
-interface Notes {
-  notes: {
+interface Parts {
+  parts: {
     id: string;
     name: string;
     idp: string;
@@ -24,7 +24,7 @@ interface Notes {
   }[];
 }
 
-const Home: NextPage<Notes> = ({ notes }) => {
+const Home: NextPage<Parts> = ({ parts }) => {
   const [form, setForm] = useState<FormData>({
     name: '',
     idp: '',
@@ -32,7 +32,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
     description: '',
     id: '',
   });
-  const [newNote, setNewNote] = useState(true);
+  const [newPart, setNewPart] = useState(true);
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -40,8 +40,8 @@ const Home: NextPage<Notes> = ({ notes }) => {
     router.replace(router.asPath)
   }
   
-  function openEditModal(note: FormData) {
-    setForm(note);
+  function openEditModal(part: FormData) {
+    setForm(part);
     setIsEditModalOpen(true);
   }
 
@@ -54,15 +54,15 @@ const Home: NextPage<Notes> = ({ notes }) => {
       description: '',
       id: '',
     });
-    setNewNote(true);
+    setNewPart(true);
   }
 
   async function handleSubmit(data: FormData) {
     try {
-      if (newNote) {
+      if (newPart) {
         if (data.name && data.idp) {
           // CREATE logic
-          fetch('api/create', {
+          fetch('api/partcreate', {
             body: JSON.stringify(data),
             headers: {
               'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
         }
       } else {
         // UPDATE logic
-        fetch(`api/note/${data.id}`, {
+        fetch(`api/part/${data.id}`, {
           body: JSON.stringify(data),
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
             description: '',
             id: '',
           });
-          setNewNote(true);
+          setNewPart(true);
           refreshData();
           router.push('/dashboard');
         });
@@ -108,7 +108,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
     }
   }
 
-  async function updateNote(
+  async function updatePart(
     name: string,
     idp: string,
     quantity: string,
@@ -116,7 +116,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
     id: string
   ) {
     setForm({ name, idp, quantity, description, id });
-    setNewNote(false);
+    setNewPart(false);
     openEditModal({
       name,
       idp,
@@ -125,10 +125,11 @@ const Home: NextPage<Notes> = ({ notes }) => {
       id,
     });
   }
+  
 
-  async function deleteNote(id: string) {
+  async function deletePart(id: string) {
     try {
-        fetch(`api/note/${id}`, {
+        fetch(`api/part/${id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -149,7 +150,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
       description: '',
       id: '',
     });
-    setNewNote(true);
+    setNewPart(true);
   }
 
   return (
@@ -175,16 +176,16 @@ const Home: NextPage<Notes> = ({ notes }) => {
           </tr>
         </thead>
         <tbody>
-          {notes.map((note) => (
-            <tr key={note.id}>
-              <td>{note.id}</td>
-              <td>{note.name}</td>
-              <td>{note.idp}</td>
-              <td>{note.quantity}</td>
-              <td>{note.description}</td>
+          {parts.map((part) => (
+            <tr key={part.id}>
+              <td>{part.id}</td>
+              <td>{part.name}</td>
+              <td>{part.idp}</td>
+              <td>{part.quantity}</td>
+              <td>{part.description}</td>
               <td>
-                <button onClick={() => updateNote(note.name, note.idp, note.quantity, note.description, note.id)}>Edit</button>
-                <button onClick={() => deleteNote(note.id)}>Delete</button>
+                <button onClick={() => updatePart(part.name, part.idp, part.quantity, part.description, part.id)}>Edit</button>
+                <button onClick={() => deletePart(part.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -252,7 +253,7 @@ const Home: NextPage<Notes> = ({ notes }) => {
                     onChange={e => setForm({ ...form, description: e.target.value })}
                     className="border rounded-md px-3 py-2 w-full"
                   />
-                  </div>
+                </div>
               <div className="flex justify-end">
                 <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2">
                   Save
@@ -274,8 +275,8 @@ const Home: NextPage<Notes> = ({ notes }) => {
 export default Home;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    // READ all notes from DB
-    const notes = await prisma?.note.findMany({
+    // READ all parts from DB
+    const parts = await prisma?.part.findMany({
       select: {
         name: true,
         idp: true,
@@ -287,7 +288,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   
     return {
       props: {
-        notes: notes || [], // Ensure that notes is initialized even if it's null
+        parts: parts || [], // Ensure that parts is initialized even if it's null
       }
     };
   };

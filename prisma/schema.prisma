@@ -12,92 +12,167 @@ datasource db {
 
 
 
+// model asset{
+//   id                Int     @id @default(autoincrement())
+//   ename             String
+//   ide               String  @unique
+//   type              String
+//   subtype           String
+//   manufacturer      String
+//   modelnum          String
+//   serialnum         String
+//   datepurc          String
+//   install           String
+//   controlsys        String
+//   commission        String
+//   datasheet         String
+//   connection        String
+//   foundation        String
+//   mechanical        String
+//   electrical        String
+//   ratedeffiency     String
+//   deviceassociation String
+//   generalnote       String
+//   createdAt         DateTime @default(now())
+//   updatedAt         DateTime @updatedAt
+//   part              part     @relation(fields: [partId], references: [idp])
+//   partId            String 
+//   status            status   @relation(fields: [statusId], references: [sid])
+//   statusId          String 
+//   brand             String
+// }
+
 model asset{
-  id                Int @id @default(autoincrement())
-  ename             String
-  ide               String
+  id                Int     @id @default(autoincrement())
   type              String
-  subtype           String
   manufacturer      String
   modelnum          String
   serialnum         String
-  datepurc          String
-  install           String
   controlsys        String
-  commission        String
-  datasheet         String
   connection        String
-  foundation        String
-  mechanical        String
-  electrical        String
-  ratedeffiency     String
-  deviceassociation String
-  generalnote       String
+
+  status            String 
+  abrand            String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-}
-
-model space{
-  id            Int @id @default(autoincrement())
-  country       String
-  state         String
-  area          String
-  building      String
-  floor         String
-  zone          String
-  dimensions    String
-  areasq        String
-  occupancy     String
-  spacetype     String
-  purposeusage  String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  part              part     @relation(fields: [partid], references: [idp])
+  partid            String 
 }
 
 model part {
-  id          Int @id @default(autoincrement())
-  name        String
-  idp         String @unique
+  id          Int      @id @default(autoincrement())
+  idp         String   @unique
+  brand       String
   quantity    String
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  status      status[]
+  asset       asset[]
 }
 
-model status {
-  id            Int @id @default(autoincrement())
-  mstatus       String
-  category      String
-  from          String
-  to            String
-  performby     String
-  attach        String
-  estimateddate String
-  warrantyinfo  String
-  comment       String
-  part  part    @relation(fields: [partId], references: [idp])
-  partId        String   // Change the data type to Int to match the `id` field in the `Part` model 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
+// model status {
+//   id            Int     @id @default(autoincrement())
+//   sid           String  @unique
+//   mstatus       String
+//   category      String
+//   from          String
+//   to            String
+//   performby     String
+//   attach        String
+//   estimateddate String
+//   warrantyinfo  String
+//   comment       String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+//   asset         asset[]
+// }
 
-model brand {
-  id       Int       @id @default(autoincrement())
-  name     String
-  bid      String    @unique
-  iot      iot[]
-}
+// model space{
+//   id            Int     @id @default(autoincrement())
+//   lid           String  @unique
+//   country       String
+//   state         String
+//   area          String
+//   building      String
+//   floor         String
+//   zone          String
+//   dimensions    String
+//   areasq        String
+//   occupancy     String
+//   spacetype     String
+//   purposeusage  String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+//   main          main[]
+//   }
 
-model iot {
-  id        Int      @id @default(autoincrement())
-  devname   String
-  devid     String
-  devtype   String
-  deveui    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  brand     brand    @relation(fields: [brandId], references: [bid])
-  brandId   String
+// model brand {
+//   id       Int       @id @default(autoincrement())
+//   name     String
+//   bid      String    @unique
+//   iot      iot[]
+// }
 
-}
+// model iot {
+//   id            Int         @id @default(autoincrement())
+//   devname       String
+//   devid         String      @unique
+//   devtype       String
+//   deveui        String
+//   createdAt     DateTime    @default(now())
+//   updatedAt     DateTime    @updatedAt
+//   brand         brand       @relation(fields: [brandId], references: [bid])
+//   brandId       String
+//   meter         meter       @relation(fields: [meterId], references: [meterid])
+//   meterId       String
+//   communi       communi     @relation(fields: [communiId], references: [commid])
+//   communiId     String
+//   main          main[]
+
+// }
+
+// model meter {
+//   id              Int      @id @default(autoincrement())
+//   metername       String
+//   meterid         String   @unique
+//   metertype       String
+//   panel           String
+//   manufacturer    String
+//   model           String
+//   serialnum       String
+//   commissiondate  String
+//   voltage         String
+//   ratio           String
+//   description     String
+//   createdAt       DateTime  @default(now())
+//   updatedAt       DateTime  @updatedAt
+//   iot             iot[]
+// }
+
+// model communi {
+//   id          Int      @id @default(autoincrement())
+//   commid      String   @unique
+//   protocol    String  
+//   medium      String
+//   ip          String
+//   baudrate     String
+//   stopbit     String
+//   parity      String 
+//   createdAt   DateTime  @default(now())
+//   updatedAt   DateTime  @updatedAt 
+//   iot         iot[]
+// }
+
+// model main{
+//   id Int @id @default(autoincrement())
+//   asset     asset     @relation(fields: [assetId], references: [ide])
+//   assetId   String
+//   iot       iot       @relation(fields: [iotId], references: [devid])
+//   iotId     String
+//   space     space     @relation(fields: [spaceId], references: [lid])
+//   spaceId   String
+//   status    status    @relation(fields: [statusId], references: [sid])
+//   statusId  String
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }

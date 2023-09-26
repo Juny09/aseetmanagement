@@ -10,50 +10,30 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { 
-    ename,
-    ide,
     type,
-    subtype,
     manufacturer,
     modelnum,
     serialnum,
-    datepurc,
-    install,
     controlsys,
-    commission,
-    datasheet,
     connection,
-    foundation,
-    mechanical,
-    electrical,
-    ratedeffiency,
-    deviceassociation,
-    generalnote,
+    partid,
+    status,
+    abrand,
    } = req.body;
 
   try {
     // CREATE
     await prisma.asset.create({
       data: {
-        ename,
-        ide,
         type,
-        subtype,
         manufacturer,
         modelnum,
         serialnum,
-        datepurc,
-        install,
         controlsys,
-        commission,
-        datasheet,
         connection,
-        foundation,
-        mechanical,
-        electrical,
-        ratedeffiency,
-        deviceassociation,
-        generalnote,
+        partid,
+        status,
+        abrand,
       },
     });
     res.status(200).json({ message: 'asset created' });

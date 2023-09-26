@@ -7,25 +7,15 @@ export default async function handler(
 ) {
   const assetId = req.query.id
   const {
-    ename,
-    ide,
     type,
-    subtype,
     manufacturer,
     modelnum,
     serialnum,
-    datepurc,
-    install,
     controlsys,
-    commission,
-    datasheet,
     connection,
-    foundation,
-    mechanical,
-    electrical,
-    ratedeffiency,
-    deviceassociation,
-    generalnote,
+    partid,
+    status,
+    abrand,
   } = req.body
     // DELETE
     if (req.method === 'DELETE') {
@@ -39,25 +29,15 @@ export default async function handler(
       const asset = await prisma.asset.update({
         where: { id: Number(assetId) },
         data: {
-          ename,
-          ide,
           type,
-          subtype,
           manufacturer,
           modelnum,
           serialnum,
-          datepurc,
-          install,
           controlsys,
-          commission,
-          datasheet,
           connection,
-          foundation,
-          mechanical,
-          electrical,
-          ratedeffiency,
-          deviceassociation,
-          generalnote
+          partid,
+          status,
+          abrand,
         }
       })
       res.status(200).json({ message: 'asset updated' })

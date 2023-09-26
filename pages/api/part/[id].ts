@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const partId = req.query.id
-  const {name, idp, quantity, description, id} = req.body
+  const {brand, idp, quantity, description, id} = req.body
     // DELETE
     if (req.method === 'DELETE') {
         const part = await prisma.part.delete({
@@ -19,7 +19,7 @@ export default async function handler(
       const part = await prisma.part.update({
         where: { id: Number(partId) },
         data: {
-          name,
+          brand,
           idp, 
           quantity, 
           description

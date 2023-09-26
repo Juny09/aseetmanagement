@@ -9,13 +9,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { name, idp, quantity, description } = req.body;
+  const { brand, idp, quantity, description } = req.body;
 
   try {
     // CREATE
     await prisma.part.create({
       data: {
-        name,
+        brand,
         idp,
         quantity,
         description,

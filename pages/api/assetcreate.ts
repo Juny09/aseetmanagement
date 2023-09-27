@@ -11,6 +11,7 @@ export default async function handler(
 ) {
   const { 
     type,
+    subtype,
     manufacturer,
     modelnum,
     serialnum,
@@ -26,6 +27,7 @@ export default async function handler(
     await prisma.asset.create({
       data: {
         type,
+        subtype,
         manufacturer,
         modelnum,
         serialnum,

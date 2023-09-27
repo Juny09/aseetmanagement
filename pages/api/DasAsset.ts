@@ -48,7 +48,7 @@ export default async function handler(
         totalAssetTypes,
         totalBrandCount,
         totalPartCount,
-        assetStatusCount, // Include the status count in the response
+        assetStatusCount,
       });
     } catch (error) {
       console.error('Error fetching data:', error);

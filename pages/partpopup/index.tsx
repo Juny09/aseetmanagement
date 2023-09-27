@@ -209,87 +209,38 @@ const handleSearch = (searchQuery: string) => {
 };
 
   return (
-    <div className=''>
-      <style jsx>{`
-        /* Set scrollbar width and color */
-        ::-webkit-scrollbar {
-          width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-          background: #333; /* Change this to your desired dark color */
-        }
-        ::-webkit-scrollbar-thumb {
-          background-color: #555; /* Change this to your desired scrollbar thumb color */
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background-color: #777; /* Change this to your desired scrollbar thumb color on hover */
-        }
-      `}</style>
-      <div className="homebg"></div>
+    <div className='bg-dark'>
 
-        <div id="mySidenav" className={`sidenav ${isNavOpen ? "open" : ""}`}>
-        <a href="#" className="closebtn" onClick={closeNav}>
-          &times;
-        </a>
-
-        <a href="./homepagesample" className="">
-          Dashboard
-        </a>
-        <div className="custom-dropdown-hover">
-          <button className="custom-button ">
-            <a href="./assetdas" className="text-white">
-              Asset <i className="custom-caret-down"></i>
-            </a>
-          </button>
-          <div className="custom-dropdown-content">
-            <a href="./equipmentform" className="custom-bar-item text-white">
-              Form
-            </a>
-            <a href="#" className="custom-bar-item text-white">
-              Link
-            </a>
-          </div>
-        </div>
-        <br />
-        <div className="custom-dropdown-hover">
-          <button className="custom-button ">
-            <a href="./spaceinfo" className="text-white">
-              Space <i className="custom-caret-down"></i>
-            </a>
-          </button>
-          <div className="custom-dropdown-content">
-            <a href="./spaceform" className="custom-bar-item text-white">
-              Form
-            </a>
-            <a href="#" className="custom-bar-item text-white">
-              Link
-            </a>
-          </div>
-        </div>
-        <br />
-        <div className="custom-dropdown-hover">
-          <button className="custom-button ">
-            <a href="./cobineuraldpm" className="text-white">
-              CobiNeural <i className="custom-caret-down"></i>
-            </a>
-          </button>
-          <div className="custom-dropdown-content">
-            <a href="./cobineuralform" className="custom-bar-item text-white">
-              Form
-            </a>
-            <a href="#" className="custom-bar-item text-white">
-              Link
-            </a>
-          </div>
-        </div>
-
-        <a href="./partlist" className="text-white">
-          Part
-        </a>
-        <a href="#" className="text-white">
-          Contact
-        </a>
-      </div>
+    <style jsx>{`
+      /* Set scrollbar width and color */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #333; /* Change this to your desired dark color */
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #555; /* Change this to your desired scrollbar thumb color */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #777; /* Change this to your desired scrollbar thumb color on hover */
+      }
+    `}</style>
+    <div className="homebg"></div>
+      <div id="mySidenav" className={`sidenav ${isNavOpen ? "open" : ""}`}>
+      <a href="#" className="closebtn" onClick={closeNav}>
+        &times;
+      </a>
+      <a href="./1dashboard" className="">
+        Dashboard
+      </a>
+      <a href="./assetpopup" className="text-white">
+        Asset
+      </a>
+      <a href="./partpopup" className="text-white">
+        Part
+      </a>
+    </div>
 
       <div id="main">
       <span

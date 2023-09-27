@@ -10,6 +10,7 @@ import React from 'react';
 interface FormData {
   id: string;
   type: string;
+  subtype: string;
   manufacturer: string;
   modelnum: string;
   serialnum: string;
@@ -24,6 +25,7 @@ interface Assets {
   assets: {
     id: string;
     type: string;
+    subtype: string;
     manufacturer: string;
     modelnum: string;
     serialnum: string;
@@ -46,6 +48,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
   const [form, setForm] = useState<FormData>({
     id: '',
     type: '',
+    subtype: '',
     manufacturer: '',
     modelnum: '',
     serialnum: '',
@@ -91,6 +94,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
       setForm({
         id: '',
         type: '',
+        subtype: '',
         manufacturer: '',
         modelnum: '',
         serialnum: '',
@@ -116,6 +120,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
   async function updateAsset(
     id:                 string,
     type:               string,
+    subtype:            string,
     manufacturer:       string,
     modelnum:           string,
     serialnum:          string,
@@ -128,6 +133,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
     setForm({
       id,
       type, 
+      subtype, 
       manufacturer, 
       modelnum, 
       serialnum, 
@@ -170,6 +176,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
     setForm({
       id: '',
       type: '',
+      subtype: '', 
       manufacturer: '',
       modelnum: '',
       serialnum: '',
@@ -254,6 +261,7 @@ const [searchTerm, setSearchTerm] = useState<string>('');
       const {
         abrand,
         type,
+        subtype,
         manufacturer,
         modelnum,
         serialnum,
@@ -267,6 +275,7 @@ const [searchTerm, setSearchTerm] = useState<string>('');
       return (
         abrand.toLowerCase().includes(searchQuery.toLowerCase()) ||
         type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        subtype.toLowerCase().includes(searchQuery.toLowerCase()) ||
         manufacturer.toLowerCase().includes(searchQuery.toLowerCase()) ||
         modelnum.toLowerCase().includes(searchQuery.toLowerCase()) ||
         serialnum.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -402,21 +411,30 @@ return (
                   id="assettype" value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}>
 
-                  <optgroup label="Type">
+  
                   <option value="">Select Option</option>
                     <option value="Production">Production</option>
                     <option value="ACMV">ACMV</option>
                     <option value="Lighting">Lighting</option>
                     <option value="External">External</option>
                     <option value="Agriculture">Agriculture</option>
-                  </optgroup>
-                  <optgroup label="Sub-Type">
+       
+                </select>
+              </div>
+
+              <div className="">
+                <label htmlFor="assettype" className="select_label">Sub Type</label>
+                <br/>
+                <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block mx-auto w-80
+                  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  id="assettype" value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                  <option value="">Select Option</option>
                     <option value="Machine">Machine</option>
                     <option value="Pump">Pump</option>
                     <option value="Motor">Motor</option>
                     <option value="Compressor">Compressor</option>
                     <option value="Chiller">Chiller</option>
-                  </optgroup>
                 </select>
               </div>
             
@@ -519,6 +537,7 @@ return (
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block mx-auto w-80
                     p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    multiple
                   >
                     <option className="bg-gray-600" value="">
                       Choose a Part
@@ -535,7 +554,6 @@ return (
                     ))}
                   </select>
 
-                  
               <br/>
             </div>
 
@@ -602,13 +620,15 @@ return (
             <th scope="col" className="px-6 py-4">#</th>
             <th scope="col" className="px-6 py-4">Brand</th>
                       <th scope="col" className="px-6 py-4">Type</th>
+                      <th scope="col" className="px-6 py-4">Sub Type</th>
                       <th scope="col" className="px-6 py-4">Manufacturer</th>
                       <th scope="col" className="px-6 py-4">Model Number</th>
                       <th scope="col" className="px-6 py-4">Serial Number</th>
                       <th scope="col" className="px-6 py-4">Control System</th>
                       <th scope="col" className="px-6 py-4">Connection</th>
-                      <th scope="col" className="px-6 py-4">Part</th>
+
                       <th scope="col" className="px-6 py-4">Status</th>
+                      <th scope="col" className="px-6 py-3">Part</th>
                       <th scope="col" className="px-6 py-3">Action</th>
           </tr>
         </thead>
@@ -618,17 +638,20 @@ return (
               <td className="whitespace-nowrap px-6 py-4 font-medium text-white">{index + 1}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.abrand}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.type}</td>
+              <td className="whitespace-nowrap px-6 py-4 text-white">{asset.subtype}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.manufacturer}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.modelnum}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.serialnum}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.controlsys}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.connection}</td>
-              <td className="whitespace-nowrap px-6 py-4 text-white">{asset.connection}</td>
+
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.status}</td>
+              <td className="whitespace-nowrap px-6 py-4 text-white">{asset.partid}</td>
               <td className="flex justify-center space-x-1 whitespace-nowrap px-6 py-4">
                 <button onClick={() => updateAsset(                              
                   asset.id,
                   asset.type,
+                  asset.subtype,
                   asset.manufacturer,
                   asset.modelnum,
                   asset.serialnum,
@@ -658,6 +681,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     select: {
       id: true,
       type: true,
+      subtype: true,
       manufacturer: true,
       modelnum: true,
       serialnum: true,

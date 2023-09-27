@@ -61,15 +61,6 @@ return (
         <a href="./assetpopup" className="text-white">
           Asset
         </a>
-        <a href="./partlist" className="text-white">
-          Space
-        </a>
-        <a href="./cobipopup" className="text-white">
-          Cobinerual
-        </a>
-        <a href="./brandpopup" className="text-white">
-          Brand
-        </a>
         <a href="./partpopup" className="text-white">
           Part
         </a>

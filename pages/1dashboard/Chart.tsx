@@ -6,28 +6,37 @@ import Chart from 'chart.js/auto';
 Chart.register(CategoryScale);
 
 const Charts = () => {
-  const [chartData, setChartData] = useState({
-    labels: ['Total Assets', 'Total Brands', 'Total Types', 'Total Parts'],
-    datasets: [{
-      label: 'Count',
-      data: [0, 0, 0, 0], // Initialize with zeros, update with actual counts
-      backgroundColor: [
-        'rgba(53, 162, 235, 0.6)',
-        'rgba(75, 192, 192, 0.6)',
-        'rgba(255, 99, 132, 0.6)',
-        'rgba(255, 206, 86, 0.6)',
-      ],
-    }],
-  });
+const [chartData, setChartData] = useState({
+  labels: ['Total Assets', 'Total Brands', 'Total Parts'],
+  datasets: [{
+    label: 'Count',
+    data: [0, 0, 0, 0], // Initialize with zeros, update with actual counts
+    backgroundColor: [
+      'rgba(53, 162, 235, 0.6)',
+      'rgba(75, 192, 192, 0.6)',
+      'rgba(255, 206, 86, 0.6)',
+    ],
+  }],
+});
 
   const [pieChartData, setPieChartData] = useState({
-    labels: ['Assets', 'Brands', 'Types', 'Parts'],
+    labels: ['Assets', 'Brands', 'Parts'],
     datasets: [{
       data: [0, 0, 0, 0], // Initialize with zeros, update with actual counts
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)',
         'rgba(255, 205, 86, 0.6)',
-        'rgba(75, 192, 192, 0.6)',
+        'rgba(54, 162, 235, 0.6)',
+      ],
+    }],
+  });
+
+  const [pieChartQuan, setPieChartQuan] = useState({
+    labels: ['Total Quantity','Total Part'],
+    datasets: [{
+      data: [0], // Initialize with zero, update with actual count
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.6)',
         'rgba(54, 162, 235, 0.6)',
       ],
     }],
@@ -38,31 +47,41 @@ const Charts = () => {
     async function fetchData() {
       try {
         const assetResponse = await fetch('/api/DasAsset');
-        const brandResponse = await fetch('/api/DasAsset'); // Change to '/api/DasBrand' or the correct brand API endpoint
-        const typeResponse = await fetch('/api/DasAsset'); // Change to '/api/DasType' or the correct type API endpoint
-        const partResponse = await fetch('/api/DasAsset'); // Change to '/api/DasPart' or the correct part API endpoint
-
-        if (assetResponse.ok && brandResponse.ok && typeResponse.ok && partResponse.ok) {
+        const brandResponse = await fetch('/api/DasAsset');
+        const partResponse = await fetch('/api/DasAsset');
+        const partquanResponse = await fetch('/api/totalPartQuan');
+    
+        if (assetResponse.ok && brandResponse.ok && partResponse.ok && partquanResponse.ok) {
           const assetData = await assetResponse.json();
           const brandData = await brandResponse.json();
-          const typeData = await typeResponse.json();
-          const partData = await partResponse.json();
 
+          const partData = await partResponse.json();
+          const partquanData = await partquanResponse.json();
+    
           // Update the bar chart data with fetched counts
           setChartData({
             ...chartData,
             datasets: [{
               ...chartData.datasets[0],
-              data: [assetData.totalAssetCount, brandData.totalBrandCount, typeData.totalTypeCount, partData.totalPartCount],
+              data: [assetData.totalAssetCount, brandData.totalBrandCount, partData.totalPartCount],
             }],
           });
-
+    
           // Update the pie chart data with fetched counts
           setPieChartData({
             ...pieChartData,
             datasets: [{
               ...pieChartData.datasets[0],
-              data: [assetData.totalAssetCount, brandData.totalBrandCount, typeData.totalTypeCount, partData.totalPartCount],
+              data: [assetData.totalAssetCount, brandData.totalBrandCount, partData.totalPartCount],
+            }],
+          });
+    
+          // Update the pie chart for quantity with fetched data
+          setPieChartQuan({
+            ...pieChartQuan,
+            datasets: [{
+              ...pieChartQuan.datasets[0],
+              data: [partquanData.totalPartQuan, partData.totalPartCount],
             }],
           });
         } else {
@@ -79,14 +98,17 @@ const Charts = () => {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        <div className="alert is-info w-full">
+        {/* <div className="alert is-info w-full">
           <Bar data={chartData} options={{}} />
         </div>
         <div className="alert is-info w-full">
           <Line data={chartData} options={{}} />
+        </div> */}
+        <div className="alert is-info w-full">
+          <Pie data={pieChartData} options={{}} />
         </div>
         <div className="alert is-info w-full">
-          <Pie data={pieChartData} options={{}} /> {/* Use pieChartData for the Pie chart */}
+          <Pie data={pieChartQuan} options={{}} />
         </div>
       </div>
     </div>

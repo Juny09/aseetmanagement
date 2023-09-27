@@ -45,6 +45,7 @@ datasource db {
 model asset{
   id                Int     @id @default(autoincrement())
   type              String
+  subtype           String
   manufacturer      String
   modelnum          String
   serialnum         String

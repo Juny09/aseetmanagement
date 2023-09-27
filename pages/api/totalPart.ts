@@ -10,8 +10,8 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       // Fetch the total count of assets
-      const totalAssetCount = await prisma.asset.count();
-      res.status(200).json({ totalAssetCount });
+      const totalNumPartCount = await prisma.part.count();
+      res.status(200).json({ totalNumPartCount });
     } catch (error) {
       console.error('Error fetching total asset count:', error);
       res.status(500).json({ error: 'Internal server error' });

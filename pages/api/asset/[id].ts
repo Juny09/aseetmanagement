@@ -8,6 +8,7 @@ export default async function handler(
   const assetId = req.query.id
   const {
     type,
+    subtype,
     manufacturer,
     modelnum,
     serialnum,
@@ -30,6 +31,7 @@ export default async function handler(
         where: { id: Number(assetId) },
         data: {
           type,
+          subtype,
           manufacturer,
           modelnum,
           serialnum,

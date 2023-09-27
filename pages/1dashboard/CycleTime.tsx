@@ -3,24 +3,10 @@ import React, { useState, useEffect } from 'react';
 const CycleTime = () => {
   const [totalAssetCount, setTotalAssetCount] = useState(null);
   const [totalBrandCount, setTotalBrandCount] = useState(null);
-  const [totalSpaceCount, setTotalSpaceCount] = useState(null);
-  const [totalIotCount, setTotalIotCount] = useState(null);
+  const [totalNumPartCount, setTotalNumPartCount] = useState(null);
   const [assetType, setAssetType] = useState(null);
-  const [totalAssetCountByManufacturer, setTotalAssetCountByManufacturer] = useState(null);
 
-  async function fetchTotalAssetCountByManufacturer() {
-    try {
-      const response = await fetch('/api/DasAsset'); // Replace with your actual API endpoint
-      if (response.ok) {
-        const data = await response.json();
-        setTotalAssetCountByManufacturer(data.totalAssetCountByManufacturer);
-      } else {
-        console.error('Failed to fetch total asset count by manufacturer');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
+
   
   async function fetchTotalAssetCount() {
     try {
@@ -50,6 +36,33 @@ const CycleTime = () => {
     }
   }
 
+  async function fetchTotalNumPartCount() {
+    try {
+      const response = await fetch('/api/totalPart');
+      if (response.ok) {
+        const data = await response.json();
+        setTotalNumPartCount(data.totalNumPartCount);
+      } else {
+        console.error('Failed to fetch total Brand count');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // async function fetchTotalNumPartCount() { // Renamed function
+  //   try {
+  //     const response = await fetch('/api/totalPart');
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setTotalNumPartCount(data); // Set the total number of parts state
+  //     } else {
+  //       console.error('Failed to fetch total Part count');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // }
 
   async function fetchData() {
     try {
@@ -67,10 +80,26 @@ const CycleTime = () => {
     }
   }
 
+  const [totalPartCount, setTotalPartCount] = useState(null);
+
+  async function fetchTotalPartCount() {
+    try {
+      const response = await fetch('/api/totalPartQuan'); // Replace with your actual API endpoint for total parts
+      if (response.ok) {
+        const data = await response.json();
+        setTotalPartCount(data); // Set the total part count state
+      } else {
+        console.error('Failed to fetch total part count');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   useEffect(() => {
     fetchTotalAssetCount();
     fetchTotalBrandCount();
-
+    fetchTotalNumPartCount(); 
+    fetchTotalPartCount();
     fetchData();
 
   }, []);
@@ -111,6 +140,29 @@ const CycleTime = () => {
               <div className="u-flex u-gap-24 u-cross-center">
                 <p className="u-bold">Total Brands:</p>
                 <p>{totalBrandCount !== null ? totalBrandCount : 'Loading...'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="u-flex u-gap-32">
+          <div className="alert is-info u-width-200 u-margin-32">
+            <div className="alert-grid">
+              <div className="u-flex u-gap-24 u-cross-center">
+                <p className="u-bold">Total Part:</p>
+                <p>{totalNumPartCount !== null ? totalNumPartCount : 'Loading...'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Parts Section */}
+        <div className="u-flex u-gap-32">
+          <div className="alert is-info u-width-200 u-margin-32">
+            <div className="alert-grid">
+              <div className="u-flex u-gap-24 u-cross-center">
+                <p className="u-bold">Total Parts Quantity:</p>
+                <p>{totalPartCount !== null ? totalPartCount : 'Loading...'}</p>
               </div>
             </div>
           </div>

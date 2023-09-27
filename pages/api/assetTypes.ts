@@ -1,5 +1,3 @@
-// pages/api/combinedApi.js
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../lib/prisma';
 
@@ -9,13 +7,17 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      // Fetch all parts
-      const parts = await prisma.part.findMany();
-      
-      // Calculate the total quantity of parts
-      const totalPartQuantity = parts.reduce((total, part) => total + parseInt(part.quantity), 0);
+      // Query the database to get the count of unique asset types
+      const assetTypes = await prisma.asset.findMany({
+        distinct: ['type'], // This will return unique asset types
+      });
 
-      res.status(200).json(totalPartQuantity);
+      // Calculate the total count of unique asset types
+      const totalAssetTypes = assetTypes.length;
+
+      res.status(200).json({
+        totalTypeCount: totalAssetTypes,
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
       res.status(500).json({ error: 'Internal server error' });

@@ -51,7 +51,6 @@ model asset{
   serialnum         String
   controlsys        String
   connection        String
-
   status            String 
   abrand            String
   createdAt         DateTime @default(now())

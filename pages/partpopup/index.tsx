@@ -209,7 +209,7 @@ const handleSearch = (searchQuery: string) => {
 };
 
   return (
-    <div className='bg-dark'>
+    <div className=''>
 
     <style jsx>{`
       /* Set scrollbar width and color */
@@ -226,7 +226,7 @@ const handleSearch = (searchQuery: string) => {
         background-color: #777; /* Change this to your desired scrollbar thumb color on hover */
       }
     `}</style>
-    <div className="homebg"></div>
+
       <div id="mySidenav" className={`sidenav ${isNavOpen ? "open" : ""}`}>
       <a href="#" className="closebtn" onClick={closeNav}>
         &times;

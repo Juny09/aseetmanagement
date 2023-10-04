@@ -43,37 +43,32 @@ const Nav = () => {
       }
     };
 
-return (
+  return (
     <div>
         <div className="homebg">
+
             <div id="mySidenav" className={`sidenav ${isNavOpen ? "open" : ""}`}>
-            <a href="#" className="closebtn" onClick={closeNav}>
-            &times;
-            </a>
-            <div className="homebg"></div>
-        <div id="mySidenav" className={`sidenav ${isNavOpen ? "open" : ""}`}>
-        <a href="#" className="closebtn" onClick={closeNav}>
-          &times;
-        </a>
-        <a href="./1dashboard" className="">
-          Dashboard
-        </a>
-        <a href="./assetpopup" className="text-white">
-          Asset
-        </a>
-        <a href="./partpopup" className="text-white">
-          Part
-        </a>
-      </div>
-        </div>
-      </div>
-      <span
-        className="sibebar text-black"
-        style={{ fontSize: "30px", cursor: "pointer", visibility: isNavOpen ? 'hidden' : 'visible' }}
-        onClick={openNav}
-      >
-        &#9776;
-      </span>
+              <a href="#" className="closebtn" onClick={closeNav}>
+                &times;
+              </a>
+              <a href="./1dashboard" className="">
+                Dashboard
+              </a>
+              <a href="./assetpopup" className="text-white">
+                Asset
+              </a>
+              <a href="./partpopup" className="text-white">
+                Part
+              </a>
+            </div>
+          </div>
+        <span
+          className="sibebar text-white"
+          style={{ fontSize: "30px", cursor: "pointer", visibility: isNavOpen ? 'hidden' : 'visible' }}
+          onClick={openNav}
+        >
+          &#9776;
+        </span>
       </div>
     )
 }

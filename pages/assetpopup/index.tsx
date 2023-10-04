@@ -82,13 +82,28 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
           alert("Asset Name and ID can not be blank");
         }
       } else {
-        await fetch(`api/asset/${data.id}`, {
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'PUT',
-        });
+        // Find the selected part details (brand and idp) based on partid
+        const selectedPart = parts.find((part) => part.idp === data.partid);
+  
+        if (selectedPart) {
+          // Include the selected part details in the data object
+          const updatedData = {
+            ...data,
+            partBrand: selectedPart.brand,
+            partIdp: selectedPart.idp,
+          };
+  
+          await fetch(`api/asset/${data.id}`, {
+            body: JSON.stringify(updatedData),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'PUT',
+          });
+        } else {
+          console.error('Selected part not found');
+          return;
+        }
       }
   
       setForm({
@@ -127,8 +142,8 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
     controlsys:         string,
     connection:         string,
     partid:             string,
-    status:           string,
-    abrand:              string,
+    status:             string,
+    abrand:             string,
     ) {
     setForm({
       id,
@@ -306,6 +321,37 @@ const [searchTerm, setSearchTerm] = useState<string>('');
     };
   }, []);
   
+  const [selectedParts, setSelectedParts] = useState<string[]>([]);
+
+  const handlePartSelection = (partId: string) => {
+    if (selectedParts.includes(partId)) {
+      setSelectedParts(selectedParts.filter((id) => id !== partId));
+    } else {
+      setSelectedParts([...selectedParts, partId]);
+    }
+  };
+  
+  const [availableParts, setAvailableParts] = useState<{ id: number; brand: string }[]>([]);
+    // Fetch available parts from your server when the component mounts
+    useEffect(() => {
+      async function fetchAvailableParts() {
+        try {
+          const response = await fetch('/api/getparts'); // Replace with your actual API endpoint
+          if (response.ok) {
+            const partsData = await response.json();
+            setAvailableParts(partsData); // Update the availableParts state with the fetched data
+          } else {
+            console.error('Failed to fetch parts data');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+  
+      fetchAvailableParts();
+    }, []);
+  
+
 
 
 return (
@@ -427,8 +473,8 @@ return (
                 <br/>
                 <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block mx-auto w-80
                   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="assettype" value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                  id="assettype" value={form.subtype}
+                  onChange={(e) => setForm({ ...form, subtype: e.target.value })}>
                   <option value="">Select Option</option>
                     <option value="Machine">Machine</option>
                     <option value="Pump">Pump</option>
@@ -537,7 +583,6 @@ return (
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block mx-auto w-80
                     p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    multiple
                   >
                     <option className="bg-gray-600" value="">
                       Choose a Part
@@ -553,6 +598,7 @@ return (
                       </option>
                     ))}
                   </select>
+
 
               <br/>
             </div>
@@ -619,17 +665,16 @@ return (
           <tr>
             <th scope="col" className="px-6 py-4">#</th>
             <th scope="col" className="px-6 py-4">Brand</th>
-                      <th scope="col" className="px-6 py-4">Type</th>
-                      <th scope="col" className="px-6 py-4">Sub Type</th>
-                      <th scope="col" className="px-6 py-4">Manufacturer</th>
-                      <th scope="col" className="px-6 py-4">Model Number</th>
-                      <th scope="col" className="px-6 py-4">Serial Number</th>
-                      <th scope="col" className="px-6 py-4">Control System</th>
-                      <th scope="col" className="px-6 py-4">Connection</th>
-
-                      <th scope="col" className="px-6 py-4">Status</th>
-                      <th scope="col" className="px-6 py-3">Part</th>
-                      <th scope="col" className="px-6 py-3">Action</th>
+            <th scope="col" className="px-6 py-4">Type</th>
+            <th scope="col" className="px-6 py-4">Sub Type</th>
+            <th scope="col" className="px-6 py-4">Manufacturer</th>
+            <th scope="col" className="px-6 py-4">Model Number</th>
+            <th scope="col" className="px-6 py-4">Serial Number</th>
+            <th scope="col" className="px-6 py-4">Control System</th>
+            <th scope="col" className="px-6 py-4">Connection</th>
+            <th scope="col" className="px-6 py-4">Status</th>
+            <th scope="col" className="px-6 py-3">Part</th>
+            <th scope="col" className="px-6 py-3">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -647,6 +692,9 @@ return (
 
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.status}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.partid}</td>
+
+
+
               <td className="flex justify-center space-x-1 whitespace-nowrap px-6 py-4">
                 <button onClick={() => updateAsset(                              
                   asset.id,

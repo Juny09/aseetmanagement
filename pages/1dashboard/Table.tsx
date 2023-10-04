@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+// import "@appwrite.io/pink";
 
 
 // Define a type for the asset data
 type Asset = {
+
     type: string;
     subtype: string;
     manufacturer: string;
@@ -18,105 +20,218 @@ type Asset = {
   };
 
 
-const Table = () => {
-  const [assets, setAssets] = useState<Asset[]>([]);
-
-  // Fetch asset data from the API
-  useEffect(() => {
-    async function fetchAssetData() {
-      try {
-        const response = await fetch('/api/assettable'); // Replace with your actual API endpoint
-        if (response.ok) {
-          const data = await response.json();
-          setAssets(data); // Set the fetched data to the 'assets' state
-        } else {
-          console.error('Failed to fetch asset data');
+  const Table = () => {
+    const [assets, setAssets] = useState<Asset[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [filteredAssets, setFilteredAssets] = useState<Asset[]>(assets);
+  
+    useEffect(() => {
+      async function fetchAssetData() {
+        try {
+          const response = await fetch('/api/assettable');
+          if (response.ok) {
+            const data = await response.json();
+            setAssets(data);
+          } else {
+            console.error('Failed to fetch asset data');
+          }
+        } catch (error) {
+          console.error('Error:', error);
         }
-      } catch (error) {
-        console.error('Error:', error);
       }
-    }
+  
+      fetchAssetData();
+    }, []);
+  
+    useEffect(() => {
+      const script = document.createElement('script');
+      script.src = 'https://www.kryogenix.org/code/browser/sorttable/sorttable.js';
+      script.async = true;
+      document.body.appendChild(script);
+  
+      return () => {
+        document.body.removeChild(script);
+      };
+    }, []);
+  
+    // const totalPages = Math.ceil(assets.length / itemsPerPage);
+  
+    // const jumpToPage = (page: number) => {
+    //   if (page >= 1 && page <= totalPages) {
+    //     setCurrentPage(page);
+    //   }
+    // };
+  
+    // // Function to handle pagination when clicking on page numbers
+    // const handlePageClick = (page: number) => {
+    //   if (page >= 1 && page <= totalPages) {
+    //     setCurrentPage(page);
+    //   }
+    // };
 
-    fetchAssetData();
-  }, []); // Empty dependency array ensures fetching data only once
-
-
-  return (
-    <div>
-      <h4 className="heading-level-4 u-text-center">Asset Data</h4>
-      <table className="table">
-        <thead className="table-thead">
-          <tr className="table-row">
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">#</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Brand</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Model Number</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Type</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Subtype</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Manufacturer</span>
-            </th>
-
-
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Control System</span>
-            </th>
-
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Status</span>
-            </th>
-            <th className="table-thead-col">
-              <span className="eyebrow-heading-3">Part ID</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="table-tbody">
-          {assets.map((asset, index) => (
-            <tr key={index} className="table-row">
-              <td className="table-col" data-title="Brand">
-                <span className="text">{index + 1}</span>
-              </td>
-              <td className="table-col" data-title="Brand">
-                <span className="text">{asset.abrand}</span>
-              </td>
-              <td className="table-col" data-title="Model Number">
-                <span className="text">{asset.modelnum}</span>
-              </td>
-              <td className="table-col" data-title="Type">
-                <span className="text">{asset.type}</span>
-              </td>
-              <td className="table-col" data-title="Subtype">
-                <span className="text">{asset.subtype}</span>
-              </td>
-              <td className="table-col" data-title="Manufacturer">
-                <span className="text">{asset.manufacturer}</span>
-              </td>
-              <td className="table-col" data-title="Control System">
-                <span className="text">{asset.controlsys}</span>
-              </td>
-              <td className={`px-0 py-5 ${asset.status === 'In Service' ? 'is-success' : (asset.status === 'Under Maintain' ? 'is-warning' : 'is-danger')}`} data-title="Status">
-                <div className={`tag ${asset.status === 'In Service' ? 'is-success' : (asset.status === 'Under Maintain' ? 'is-warning' : 'is-danger')}`}>
-                  <span className="text">{asset.status}</span>
-                </div>
-              </td>
-              <td className="table-col" data-title="Control System">
-                <span className="text">{asset.partid}</span>
-              </td>
+  
+    useEffect(() => {
+      const trimmedQuery = searchTerm.trim().toLowerCase();
+  
+      const filtered = assets.filter((asset) => {
+        const {
+          abrand,
+          type,
+          subtype,
+          manufacturer,
+          modelnum,
+          controlsys,
+          partid,
+          status,
+        } = asset;
+  
+        return (
+          abrand.toLowerCase().includes(trimmedQuery) ||
+          type.toLowerCase().includes(trimmedQuery) ||
+          subtype.toLowerCase().includes(trimmedQuery) ||
+          manufacturer.toLowerCase().includes(trimmedQuery) ||
+          modelnum.toLowerCase().includes(trimmedQuery) ||
+          controlsys.toLowerCase().includes(trimmedQuery) ||
+          partid.toLowerCase().includes(trimmedQuery) ||
+          status.toLowerCase().includes(trimmedQuery)
+        );
+      });
+  
+      setFilteredAssets(filtered);
+    }, [searchTerm, assets, currentPage]);
+  
+    return (
+      <div className="table-responsive">
+      <div className="rounded-lg overflow-hidden shadow-lg p-4">
+        <div className="relative mt-1">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none bg-slate-950 rounded-2xl">
+            <svg
+              className="w-4 h-4 text-gray-500 dark:text-gray-400 bg-slate-950 rounded-2xl"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="search"
+            className="block p-2 pl-10 text-sm text-gray-900 rounded-2xl w-80 bg-slate-950 focus:ring-blue-500 focus:border-blue-500 focus:border-0 outline-none dark:bg-slate-950 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search for items"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+          />
+        </div>
+        <table className="sortable table-auto bg-slate-950 rounded-3xl" style={{ width: '800px', height: '400px' }}>
+          <thead>
+            <tr>
+              <th className="p-3">
+                <span className="text-gray-400">#</span>
+              </th>
+              <th className="p-8">
+                <span className="text-gray-400">Brand</span>
+              </th>
+              <th className="p-3">
+                <span className="text-gray-400">Model Number</span>
+              </th>
+              <th className="p-3">
+                <span className="text-gray-400">Type</span>
+              </th>
+              <th className="p-3">
+                <span className="text-gray-400">Subtype</span>
+              </th>
+              <th className="p-8">
+                <span className="text-gray-400">Manufacturer</span>
+              </th>
+              <th className="p-8">
+                <span className="text-gray-400">Control System</span>
+              </th>
+              <th className="p-11">
+                <span className="text-gray-400">Status</span>
+              </th>
+              <th className="p-8">
+                <span className="text-gray-400">Part</span>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-export default Table;
+          </thead>
+          <tbody>
+            {filteredAssets.map((asset, index) => (
+              <tr key={index}>
+                <td className="p-3">
+                  <span className="text-gray-400">{index + 1}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.abrand}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.modelnum}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.type}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.subtype}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.manufacturer}</span>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.controlsys}</span>
+                </td>
+                <td className={`text-center p-2 ${asset.status === 'In Service' ? 'text-green-600' : (asset.status === 'Under Maintain' ? 'text-yellow-600' : 'text-red-600')}`}>
+                  <div className={`rounded-full px-2 py-1 ${asset.status === 'In Service' ? 'bg-green-200' : (asset.status === 'Under Maintain' ? 'bg-yellow-200' : 'bg-red-200')}`}>
+                    <span className="text-sm">{asset.status}</span>
+                  </div>
+                </td>
+                <td className="p-3">
+                  <span className="text-gray-400">{asset.partid}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+  
+        {/* Pagination controls
+        <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handlePageClick(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 text-gray-600"
+        >
+          Previous
+        </button>
+        <span className="px-3 py-1 text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageClick(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 text-gray-600"
+        >
+          Next
+        </button>
+        </div> */}
+  
+        {/* Display the total number of items and items per page */}
+        <div className="text-center mt-2 text-gray-300">
+          Total Items: {assets.length}
+        </div>
+      </div>
+      </div>
+    );
+  };
+  
+  export default Table;
+  

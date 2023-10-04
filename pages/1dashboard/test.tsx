@@ -1,57 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
+import {Chart,ArcElement} from 'chart.js/auto';
 
-Chart.defaults.plugins.legend.display = false;
+Chart.register(ArcElement);
+interface Part {
+  idp: string;
+  quantity: number;
+  // Add more properties as needed
+}
 
 const Charts = () => {
-  const [pieChartData, setPieChartData] = useState({
-    labels: ['Assets', 'Brands', 'Parts'],
-    datasets: [{
-      data: [0, 0, 0], // Initialize with zeros, update with actual counts
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.6)',
-        'rgba(255, 205, 86, 0.6)',
-        'rgba(54, 162, 235, 0.6)',
-      ],
-    }],
+  const [pieChartData, setPieChartData] = useState<{
+    labels: string[];
+    datasets: {
+      data: number[];
+      backgroundColor: string[];
+    }[];
+  }>({
+    labels: [], // Initialize with an empty array for labels
+    datasets: [
+      {
+        data: [], // Initialize with an empty array for data
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(255, 205, 86, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          // Add more colors if needed
+        ],
+      },
+    ],
   });
 
-  const [partQuantityData, setPartQuantityData] = useState([]); // State for brand quantity data
-
+  // Fetch data for the Pie chart
   useEffect(() => {
     async function fetchData() {
       try {
-        const assetResponse = await fetch('/api/DasAsset');
-        const brandResponse = await fetch('/api/DasBrand');
-        const partResponse = await fetch('/api/DasPart');
-        const partquanResponse = await fetch('/api/totalPartQuan');
-        const partQuantityResponse = await fetch('/api/totalPartQuan'); // New API endpoint
-
-        if (
-          assetResponse.ok &&
-          brandResponse.ok &&
-          partResponse.ok &&
-          partquanResponse.ok &&
-          partQuantityResponse.ok // Check for the new response
-        ) {
-          const assetData = await assetResponse.json();
-          const brandData = await brandResponse.json();
-          const partData = await partResponse.json();
-          const partquanData = await partquanResponse.json();
-          const partQuantityData = await partQuantityResponse.json(); // New data
-
-          // Update the pie chart data with fetched counts
+        // Make a GET request to fetch all data from the "part" table
+        const response = await fetch('/api/partidpq');
+    
+        if (response.ok) {
+          const data: Part[] = await response.json(); // Specify the data type as Part[]
+    
+          // Extract the necessary data for the Pie chart
+          const labels = data.map((part: Part) => part.idp); // Specify the type of 'part'
+          const quantities = data.map((part: Part) => part.quantity); // Specify the type of 'part'
+    
+          // Update the Pie chart data
           setPieChartData({
             ...pieChartData,
-            datasets: [{
-              ...pieChartData.datasets[0],
-              data: [assetData.totalAssetCount, brandData.totalBrandCount, partData.totalPartCount],
-            }],
+            labels,
+            datasets: [
+              {
+                ...pieChartData.datasets[0],
+                data: quantities,
+              },
+            ],
           });
-
-          // Update the brand quantity data
-          setPartQuantityData(partQuantityData);
         } else {
           console.error('Failed to fetch data');
         }
@@ -59,43 +63,17 @@ const Charts = () => {
         console.error('Error:', error);
       }
     }
-
+    
     fetchData();
-  }, []);
+  }, []); // Empty dependency array ensures fetching data only once
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-8">
-        <div className="alert is-info w-full">
-          <Pie data={pieChartData} options={{}} />
-        </div>
-        <div className="alert is-info w-full">
-          <Pie data={getPartQuantityChartData(partQuantityData)} options={{}} />
-        </div>
+      <div className="alert is-info w-full">
+        <Pie data={pieChartData} options={{}} />
       </div>
     </div>
   );
 };
-
-// Helper function to create data for brand quantity pie chart
-function getPartQuantityChartData(partQuantityData) {
-  return {
-    labels: partQuantityData.map(part => part.brand),
-    datasets: [{
-      data: partQuantityData.map(part => part.quantity),
-      backgroundColor: generateRandomColors(partQuantityData.length),
-    }],
-  };
-}
-
-// Helper function to generate random colors
-function generateRandomColors(count) {
-  const colors = [];
-  for (let i = 0; i < count; i++) {
-    const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.6)`;
-    colors.push(color);
-  }
-  return colors;
-}
 
 export default Charts;

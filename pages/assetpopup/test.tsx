@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
-import { prisma } from '../lib/prisma'
+import { prisma } from '../../lib/prisma'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import React from 'react';
@@ -228,22 +228,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
   };
   
 
-  const types = ['ALL', 'Machine', 'Type2', 'Type3']; // Update with your actual types
-
-  // State variable to store selected part IDs
-  const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
-
-  // Function to handle checkbox changes
-  const handleCheckboxChange = (partId: string) => {
-    // Check if the partId is already in selectedPartIds
-    if (selectedPartIds.includes(partId)) {
-      // If it's already selected, remove it
-      setSelectedPartIds((prevIds) => prevIds.filter((id) => id !== partId));
-    } else {
-      // If it's not selected, add it
-      setSelectedPartIds((prevIds) => [...prevIds, partId]);
-    }
-  };
+  const types = ['ALL', 'Type1', 'Type2', 'Type3']; // Update with your actual types
 
   return (
     <div>
@@ -254,7 +239,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
       </Head>
 
       <main className="bg-gray-100 min-h-screen">
-        <div className="container mx-auto p-2">
+        <div className="container mx-auto p-8">
           <div className="bg-white p-4 rounded-md shadow-md">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold text-gray-800">Assets</h1>
@@ -266,9 +251,9 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                   {isFormOpen ? 'Close Form' : 'Add Asset'}
                 </button>
                 {isFormOpen && (
-                  <div className="absolute right-0 mt-10 w-[500px] bg-white border border-gray-200 rounded-md shadow-md">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-md">
                     <form
-                      className="p-8" // Increase padding here
+                      className="p-4"
                       onSubmit={(e) => {
                         e.preventDefault();
                         handleSubmit(form);
@@ -276,14 +261,14 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                     >
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
-                          Asset Brand
+                          Asset ID
                         </label>
                         <input
                           type="text"
                           className="mt-1 p-2 w-full border rounded-md"
-                          placeholder="Asset Brand"
-                          value={form.abrand}
-                          onChange={(e) => setForm({ ...form, abrand: e.target.value })}
+                          placeholder="Asset ID"
+                          value={form.id}
+                          onChange={(e) => setForm({ ...form, id: e.target.value })}
                         />
                       </div>
                       <div className="mb-4">
@@ -388,47 +373,31 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                           <option value="3-Phase DOL">3-Phase DOL</option>
                         </select>
                       </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Part ID
+                        </label>
+                        <input
+                          type="text"
+                          className="mt-1 p-2 w-full border rounded-md"
+                          placeholder="Part ID"
+                          value={form.partid}
+                          onChange={(e) => setForm({ ...form, partid: e.target.value })}
+                        />
+                      </div>
 
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
-                          Part IDs
+                          Asset Brand
                         </label>
-                        {parts.map((part) => (
-                          <div key={part.id} className="flex items-center mb-2">
-                            <input
-                              type="checkbox"
-                              className="form-checkbox h-5 w-5 text-blue-600 border rounded-md"
-                              checked={selectedPartIds.includes(part.id)} // Use "checked" instead of "value" for checkboxes
-                              onChange={() => handleCheckboxChange(part.id)}
-                            />
-                            <span className="ml-2">
-                              {part.brand} ({part.idp})
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Part
-                        </label>
-                        <select
+                        <input
+                          type="text"
                           className="mt-1 p-2 w-full border rounded-md"
-                          value={form.partid}
-                          onChange={(e) => setForm({ ...form, partid: e.target.value })}
-                        >
-                            <option value="">Select Part</option>
-                            {parts.map((part) => (
-                              <option
-                                key={part.idp}
-                                value={part.idp}
-                                className=""
-                              >
-                                {part.brand} ({part.idp})
-                              </option>
-                            ))}
-                        </select>
-                      </div> */}
+                          placeholder="Asset Brand"
+                          value={form.abrand}
+                          onChange={(e) => setForm({ ...form, abrand: e.target.value })}
+                        />
+                      </div>
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
@@ -489,13 +458,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    #
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Asset Brand
+                    ID
                   </th>
                   <th
                     scope="col"
@@ -543,7 +506,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Part
+                    Part ID
                   </th>
                   <th
                     scope="col"
@@ -551,17 +514,21 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                   >
                     Status
                   </th>
-
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Asset Brand
+                  </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredAssets.map((asset, index) => (
+                {filteredAssets.map((asset) => (
                   <tr key={asset.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{asset.abrand}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{asset.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{asset.type}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{asset.subtype}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{asset.manufacturer}</td>
@@ -571,13 +538,12 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                     <td className="px-6 py-4 whitespace-nowrap">{asset.connection}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{asset.partid}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{asset.status}</td>
-
+                    <td className="px-6 py-4 whitespace-nowrap">{asset.abrand}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() =>
                           updateAsset(
                             asset.id,
-                            asset.abrand,
                             asset.type,
                             asset.subtype,
                             asset.manufacturer,
@@ -587,7 +553,7 @@ const Home: NextPage<Assets> = ({ assets, parts }) => {
                             asset.connection,
                             asset.partid,
                             asset.status,
-
+                            asset.abrand,
                           )
                         }
                         className="text-blue-600 hover:underline cursor-pointer"
@@ -645,5 +611,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   };
 };
+
 
 export default Home;

@@ -231,7 +231,7 @@ const handleSearch = (searchQuery: string) => {
       <a href="#" className="closebtn" onClick={closeNav}>
         &times;
       </a>
-      <a href="./1dashboard" className="">
+      <a href="./" className="">
         Dashboard
       </a>
       <a href="./assetpopup" className="text-white">

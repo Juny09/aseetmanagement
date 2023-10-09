@@ -26,17 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <div>
-      {/* Dark mode button */}
-      <button
-        className={`fixed top-4 right-4 p-2 rounded-full ${
-          darkMode
-            ? 'bg-white text-gray-800'
-            : 'bg-gray-800 text-white'
-        }`}
-        onClick={toggleDarkMode}
-      >
-        {darkMode ? <FiSun /> : <FiMoon />}
-      </button>
+
   
       {/* Render your component */}
       <Component {...pageProps} />

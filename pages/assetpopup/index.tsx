@@ -351,7 +351,11 @@ const [searchTerm, setSearchTerm] = useState<string>('');
       fetchAvailableParts();
     }, []);
   
-
+    function getPartBrandById(partid: string) {
+      const selectedPart = parts.find((part) => part.id === partid);
+      return selectedPart ? selectedPart.brand : 'N/A';
+    }
+    
 
 
 return (
@@ -377,7 +381,7 @@ return (
       <a href="#" className="closebtn" onClick={closeNav}>
         &times;
       </a>
-      <a href="./1dashboard" className="">
+      <a href="./" className="">
         Dashboard
       </a>
       <a href="./assetpopup" className="text-white">
@@ -692,6 +696,10 @@ return (
 
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.status}</td>
               <td className="whitespace-nowrap px-6 py-4 text-white">{asset.partid}</td>
+              {/* 
+              <td className="whitespace-nowrap px-6 py-4 text-white">
+                {`${asset.abrand} (${getPartBrandById(asset.partid)})`}
+              </td> */}
 
 
 

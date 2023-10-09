@@ -2,19 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* In your CSS or SCSS file */
-.dark-mode-table {
-  background-color: #333; /* Dark background color */
-  color: white; /* Text color */
-}
 
-/* global.css */
-/* Add these styles to your CSS file */
-.dark-mode {
-  /* Define your dark mode styles here */
-  background-color: #1d1d1d;
-  color: rgb(0, 0, 0);
-}
+
+
 
 /* Add additional styles for dark mode as needed */
 

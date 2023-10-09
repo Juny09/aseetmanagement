@@ -17,12 +17,20 @@ export default async function handler(
     serialnum,
     controlsys,
     connection,
+    selectedPartIds,
     partid,
     status,
     abrand,
    } = req.body;
 
   try {
+    const selectedParts = await prisma.part.findMany({
+      where: {
+        idp: {
+          in: selectedPartIds,
+        },
+      },
+    });
     // CREATE
     await prisma.asset.create({
       data: {

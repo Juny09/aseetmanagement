@@ -205,13 +205,13 @@ const Charts = () => {
       <div className="max-w-md mx-auto bg-slate-950 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <h1 className="text-center p-2 text-gray-300">Status</h1>
         <div className="md:flex justify-center items-center">
-  <Pie data={statusPieChartData} options={chartOptions} className="h-64 w-64 object-cover md:h-64 md:w-64 lg:w-48" />
-</div>
+          <Pie data={statusPieChartData} options={chartOptions} className="" />
+        </div>
 
         <br/>
         <h1 className="text-center p-2 text-gray-300">Part</h1>
         <div className="md:flex justify-center items-center">
-          <Pie data={partPieChartData} options={chartOptions} className="h-96 w-96 object-cover md:h-96 md:w-96 lg:w-64" />
+          <Pie data={partPieChartData} options={chartOptions} className="" />
         </div>
       </div>
     </div>

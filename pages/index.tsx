@@ -3,6 +3,7 @@ import Table from './Table';
 import CycleTime from './CycleTime';
 import Charts from './Chart';
 import Nav from './Nav';
+import ScatterChart from './scatter';
 
 export default function Home() {
   return (
@@ -17,8 +18,9 @@ export default function Home() {
         <div className="grid grid-cols-4 gap-1">
           <div className="col-span-4"><CycleTime /></div>
           <div className="col-span-1">
-            <div className="chart-container">
+          <div className=""style={{ width: '100%', height: '400px' }}>
               <Charts />
+              <ScatterChart/>
             </div>
           </div>
           <div className="col-span-3">
@@ -37,6 +39,8 @@ export default function Home() {
             max-width: 100%;
           }
         }
+
+
       `}</style>
     </main>
   );

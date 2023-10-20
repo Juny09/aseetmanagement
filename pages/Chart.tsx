@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Pie } from 'react-chartjs-2';
-import { CategoryScale } from 'chart.js';
+import { Pie, Scatter } from 'react-chartjs-2';
+import { CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from 'chart.js';
 import Chart from 'chart.js/auto';
 
-Chart.register(CategoryScale);
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 interface Asset {
   id: string;
@@ -30,115 +30,65 @@ const Charts = () => {
   const [statusPieChartData, setStatusPieChartData] = useState<{
     labels: string[];
     datasets: {
-      data: number[]; // Change this to an array of numbers
+      data: number[];
       backgroundColor: string[];
     }[];
   }>({
     labels: [],
     datasets: [
       {
-        data: [], // Change this to an empty array of numbers
+        data: [],
         backgroundColor: [],
       },
-    ],
+    ] as {
+      data: number[];
+      backgroundColor: string[];
+    }[],
   });
-  
+
   const [partPieChartData, setPartPieChartData] = useState<{
     labels: string[];
     datasets: {
-      data: number[]; // Change this to an array of numbers
+      data: number[];
       backgroundColor: string[];
     }[];
   }>({
     labels: [],
     datasets: [
       {
-        data: [], // Change this to an empty array of numbers
+        data: [],
         backgroundColor: [],
       },
-    ],
-  });  
+    ] as {
+      data: number[];
+      backgroundColor: string[];
+    }[],
+  });
 
-
-  // Fetch data from the "asset" table and calculate counts for each unique "status" and "abrand"
   useEffect(() => {
     async function fetchData() {
       try {
-      // Make a GET request to fetch data from the "asset" table
-      const assetResponse = await fetch('/api/getasset'); // Replace with your API endpoint
+        // Make a GET request to fetch data from the "asset" table
+        const assetResponse = await fetch('/api/getasset'); // Replace with your API endpoint
 
-      if (assetResponse.ok) {
-        // const statusData: Asset[] = await assetResponse.json();
+        if (assetResponse.ok) {
+          const assetData: Asset[] = await assetResponse.json();
 
-        // // Extract the necessary data for the Pie chart
-        // const labels = statusData.map((asset: Asset) => `${asset.status}`);
-        // const data = statusData.map((asset: Asset) => asset.id); // Assuming you have a quantity property for Asset
-
-        // // Generate random background colors
-        // const backgroundColors = labels.map(getRandomRGBColor);
-
-        // // Update the status Pie chart data
-        // setStatusPieChartData({
-        //   labels: labels,
-        //   datasets: [
-        //     {
-        //       data: data,
-        //       backgroundColor: backgroundColors,
-        //     },
-        //   ],
-        // });
-
-        //status + abrand
-        // const assetData: Asset[] = await assetResponse.json();
-
-        // // Calculate the count of each status type
-        // const statusCounts: Record<string, number> = {};
-
-        // assetData.forEach((asset) => {
-        //   const key = `${asset.abrand} - ${asset.status}`;
-        //   if (statusCounts[key]) {
-        //     statusCounts[key]++;
-        //   } else {
-        //     statusCounts[key] = 1;
-        //   }
-        // });
-
-        // const labels = Object.keys(statusCounts);
-        // const data = labels.map((label) => statusCounts[label]);
-
-        // // Generate random background colors
-        // const backgroundColors = labels.map(getRandomRGBColor);
-
-        // setStatusPieChartData({
-        //   labels: labels,
-        //   datasets: [
-        //     {
-        //       data: data,
-        //       backgroundColor: backgroundColors,
-        //     },
-        //   ],
-        // });
-
-        const assetData: Asset[] = await assetResponse.json();
-  
-          // Calculate the count of each status type
           const statusCounts: Record<string, number> = {};
-  
+
           assetData.forEach((asset) => {
-            const key = asset.status; // Use "status" as the key
+            const key = asset.status;
             if (statusCounts[key]) {
               statusCounts[key]++;
             } else {
               statusCounts[key] = 1;
             }
           });
-  
+
           const labels = Object.keys(statusCounts);
           const data = labels.map((label) => statusCounts[label]);
-  
-          // Generate random background colors
           const backgroundColors = labels.map(getRandomRGBColor);
-  
+
           setStatusPieChartData({
             labels: labels,
             datasets: [
@@ -146,24 +96,24 @@ const Charts = () => {
                 data: data,
                 backgroundColor: backgroundColors,
               },
-            ],
+            ] as {
+              data: number[];
+              backgroundColor: string[];
+            }[],
           });
         } else {
           console.error('Failed to fetch asset data');
         }
 
-        // Make a GET request to fetch data from the "part" table
         const partResponse = await fetch('/api/partidpq'); // Replace with your API endpoint
 
         if (partResponse.ok) {
           const partData: Part[] = await partResponse.json();
 
-          // Extract the necessary data for the Pie chart
           const partLabels = partData.map((part: Part) => part.idp);
           const partQuantities = partData.map((part: Part) => part.quantity);
           const partBackgroundColors = partLabels.map(getRandomRGBColor);
 
-          // Update the part Pie chart data
           setPartPieChartData({
             labels: partLabels,
             datasets: [
@@ -171,7 +121,10 @@ const Charts = () => {
                 data: partQuantities,
                 backgroundColor: partBackgroundColors,
               },
-            ],
+            ] as {
+              data: number[];
+              backgroundColor: string[];
+            }[],
           });
         } else {
           console.error('Failed to fetch part data');
@@ -182,36 +135,82 @@ const Charts = () => {
     }
 
     fetchData();
-    
-  }, []); // Empty dependency array ensures fetching data only once
-  
+  }, []);
+
   const chartOptions = {
     responsive: true,
     plugins: {
       legend: {
         display: true,
-        position: 'bottom' as 'bottom', // Explicitly specify the type as 'bottom'
+        position: 'bottom' as 'bottom',
       },
     },
-    // Set the background color for the entire chart
-    backgroundColor: 'rgba(50, 70, 90, 0.8)', // Replace with your desired color
+    backgroundColor: 'rgba(50, 70, 90, 0.8',
   };
-  
 
+// Generate data for the Scatter chart
+const scatterData = {
+  datasets: [
+    {
+      label: 'Scatter Chart',
+      data: [] as { x: string; y: number }[],
+      backgroundColor: 'rgba(255, 99, 132, 1',
+    },
+  ],
+};
+
+// Generate data for the Scatter chart representing days of the week (Monday to Sunday) and months from January to December
+const daysOfWeek = [
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+];
+
+const months = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+let dayIndex = 0;
+
+for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+  scatterData.datasets[0].data.push({
+    x: daysOfWeek[dayIndex],  // Day of the week
+    y: monthIndex,           // Month (0 to 11 for January to December)
+  });
+
+  // Increment the dayIndex, looping from Monday to Sunday and then back to Monday
+  dayIndex = (dayIndex + 1) % 7;
+}
+
+
+
+
+  const scatterOptions = {
+    scales: {
+      x: {
+        beginAtZero: true,
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
 
   return (
     <div className="rounded-xl">
-
       <div className="max-w-md mx-auto bg-slate-950 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <h1 className="text-center p-2 text-gray-300">Status</h1>
         <div className="md:flex justify-center items-center">
           <Pie data={statusPieChartData} options={chartOptions} className="" />
         </div>
-
-        <br/>
+        <br />
         <h1 className="text-center p-2 text-gray-300">Part</h1>
         <div className="md:flex justify-center items-center">
           <Pie data={partPieChartData} options={chartOptions} className="" />
+        </div>
+        <br />
+        <h1 className="text-center p-2 text-gray-300">Scatter Chart</h1>
+        <div className="md:flex justify-center items-center">
+          <Scatter data={scatterData} options={scatterOptions} className="" />
         </div>
       </div>
     </div>
@@ -219,8 +218,3 @@ const Charts = () => {
 };
 
 export default Charts;
-
-
-
-
-
